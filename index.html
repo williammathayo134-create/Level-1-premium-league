@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 1 Premium League (DLS)</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Level 1 Premium League (DLS)</h1>
+
+        <!-- 1. UKURASA WA KWANZA: USAJILI AU KUINGIA (AUTH) -->
+        <div id="auth-section" class="page-view">
+            <div class="card">
+                <h2>Karibu kwenye Ligi</h2>
+                <div class="tab-buttons">
+                    <button onclick="switchTab('login')">Ingia na ID</button>
+                    <button onclick="switchTab('register')">Jisajili (Mgeni)</button>
+                </div>
+
+                <!-- Fomu ya Kuingia (ID ya Mchezaji au Password ya Admin 'Richard') -->
+                <div id="login-form" class="form-box">
+                    <h3>Ingia kwenye Mfumo</h3>
+                    <input type="text" id="login-id" placeholder="Weka ID yako au Password ya Admin">
+                    <button onclick="handleLogin()">Ingia Sasa</button>
+                </div>
+
+                <!-- Fomu ya Usajili wa Mgeni -->
+                <div id="register-form" class="form-box" style="display:none;">
+                    <h3>Jisajili Upate ID Yako</h3>
+                    <p id="reg-status-msg" style="color: green; font-size: 14px;"></p>
+                    <input type="text" id="reg-name" placeholder="Jina lako kamili">
+                    <input type="text" id="reg-contact" placeholder="Namba ya Simu au Email">
+                    <button id="btn-submit-reg" onclick="handleRegister()">Jisajili</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. UKURASA WA PILI: USAJILI WA TIMU NA LOGO (KWA MCHEZAJI MPYA) -->
+        <div id="team-setup-section" class="page-view" style="display:none;">
+            <div class="card">
+                <h2>Sajili Timu Yako</h2>
+                <p>ID Yako ni: <strong id="assigned-id-display" style="color: blue;"></strong> (Iweke kumbukumbu!)</p>
+                <input type="text" id="team-name-input" placeholder="Jina la Timu yako kwenye Ligi">
+                <input type="text" id="team-logo-input" placeholder="Link ya Logo ya Timu (Image URL)">
+                <button onclick="saveTeamDetails()">Hifadhi Timu na Endelea</button>
+            </div>
+        </div>
+
+        <!-- 3. DASHBODI KUU NA MENYU YA KURASA -->
+        <div id="dashboard-section" class="page-view" style="display:none;">
+            <div class="card">
+                <h2>Karibu, <span id="user-welcome-name"></span></h2>
+                <p>Aina ya Akaunti: <span id="user-role-badge" style="font-weight: bold; color: darkblue;"></span></p>
+                <button onclick="handleLogout()" style="background: #dc3545; color: white;">Toka nje (Logout)</button>
+
+                <!-- Menyu Kuu ya Kurasa Zinazojitegemea -->
+                <div class="menu-nav" style="margin-top: 15px;">
+                    <button onclick="navigateTo('view-table')">Msimamo wa Ligi</button>
+                    <button onclick="navigateTo('view-fixtures')">Ratiba za Mechi</button>
+                    <button onclick="navigateTo('view-scorers')">Wafungaji & Assist</button>
+                    <button onclick="navigateTo('view-history')">Mechi Zilizopita</button>
+                    <button onclick="navigateTo('view-submit')">Wasilisha Matokeo</button>
+                    <!-- Kitufe Maalum cha Admin -->
+                    <button id="admin-menu-btn" onclick="navigateTo('view-admin')" style="display:none; background: #ffc107; color: #000;">Admin Panel</button>
+                </div>
+            </div>
+
+            <!-- A. UKURASA WA MSIMAMO WA LIGI -->
+            <div id="view-table" class="sub-view">
+                <div class="card">
+                    <h3>Msimamo wa Ligi (Ligi Kuu / Mabingwa / Shirikisho)</h3>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nafasi</th>
+                                    <th>Logo</th>
+                                    <th>Timu</th>
+                                    <th>IME</th>
+                                    <th>USH</th>
+                                    <th>SAR</th>
+                                    <th>FUNG</th>
+                                    <th>GF</th>
+                                    <th>GA</th>
+                                    <th>GD</th>
+                                    <th>Alama</th>
+                                </tr>
+                            </thead>
+                            <tbody id="league-table-body">
+                                <!-- Data zitajazwa na JS kutoka JSONBin -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- B. UKURASA WA RATIBA ZA MECHI -->
+            <div id="view-fixtures" class="sub-view" style="display:none;">
+                <div class="card">
+                    <h3>Ratiba za Mechi (Zimepangwa Kiotomatiki)</h3>
+                    <div id="fixtures-container">
+                        <p>Hakuna ratiba zilizopangwa kwa sasa.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- C. UKURASA WA WAFUNGAJI & ASSIST BORA -->
+            <div id="view-scorers" class="sub-view" style="display:none;">
+                <div class="card">
+                    <h3>Wafungaji Bora (Top Scorers)</h3>
+                    <ul id="top-scorers-list"><li>Inapakia...</li></ul>
+                    <hr>
+                    <h3>Assist Bora (Top Playmakers)</h3>
+                    <ul id="top-assists-list"><li>Inapakia...</li></ul>
+                </div>
+            </div>
+
+            <!-- D. UKURASA WA MECHI ZILIZOPITA -->
+            <div id="view-history" class="sub-view" style="display:none;">
+                <div class="card">
+                    <h3>Matokeo ya Mechi Zilizopita</h3>
+                    <div id="match-history-container">
+                        <p>Hakuna mechi zilizochezwa bado.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- E. UKURASA WA KUWASILISHA MATOKEO (Wafayaji) -->
+            <div id="view-submit" class="sub-view" style="display:none;">
+                <div class="card">
+                    <h3>Wasilisha Matokeo ya Mechi</h3>
+                    <input type="text" id="match-opponent" placeholder="Mpinzani wako">
+                    <input type="text" id="match-score" placeholder="Matokeo (Mfano: 2 - 1)">
+                    <input type="text" id="match-scorer-name" placeholder="Nani alifunga magoli?">
+                    <input type="text" id="match-assist-name" placeholder="Nani alitoa assist?">
+                    <label>Weka Picha ya Uthibitisho (Screenshot):</label>
+                    <input type="file" id="match-screenshot" accept="image/*">
+                    <button onclick="submitMatchResult()">Tuma kwa Admin</button>
+                </div>
+            </div>
+
+            <!-- F. ADMIN PANEL: KUTHIBITISHA NA KUREFRESH LIGI -->
+            <div id="view-admin" class="sub-view" style="display:none;">
+                <div class="card" style="border: 2px solid #ffc107;">
+                    <h3>Usimamizi wa Admin (Richard)</h3>
+                    <button onclick="adminResetLeague()" style="background: #dc3545; color: white; margin-bottom: 15px;">Refresh / Reset Msimamo (Futa Ligi na Fungua Usajili)</button>
+                    
+                    <h4>Mechi Zinazosubiri Uthibitisho</h4>
+                    <div id="admin-pending-container">
+                        <p>Hakuna matokeo yanayosubiri.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
