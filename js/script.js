@@ -313,4 +313,61 @@ async function adminResetLeague() {
     } catch (err) {
         alert('Hitilafu: ' + err.message);
     }
+}async function adminToggleAndStartLeague() {
+    let password = prompt("Ingiza nenosiri la Admin (Richard):");
+    if (password !== ADMIN_PASSWORD) {
+        alert("Nenosiri si sahihi!");
+        return;
+    }
+
+    try {
+        let res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+            headers: { 'X-Master-Key': JSONBIN_API_KEY }
+        });
+        let data = await res.json();
+        let users = data.record.users || data.record;
+
+        if (!Array.isArray(users)) {
+            alert("Hitilafu kwenye muundo wa data za wachezaji.");
+            return;
+        }
+
+        // Kichujio cha kuondoa wote waliojisajili mara mbili (Duplicate cleaner)
+        let uniqueUsers = [];
+        let seenContacts = new Set();
+        let seenNames = new Set();
+
+        users.forEach(player => {
+            let name = player.full_name ? player.full_name.trim().toLowerCase() : "";
+            let contact = player.contact ? player.contact.trim() : "";
+            
+            if (name && contact && !seenContacts.has(contact) && !seenNames.has(name)) {
+                seenContacts.add(contact);
+                seenNames.add(name);
+                uniqueUsers.push(player);
+            }
+        });
+
+        // Hifadhi hali ya kufungwa na orodha safi isiyo na marudio kwenye JSONBin
+        let updateRes = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': JSONBIN_API_KEY
+            },
+            body: JSON.stringify({ users: uniqueUsers, registration_closed: true })
+        });
+
+        if (updateRes.ok) {
+            localStorage.setItem('registration_closed', 'true');
+            alert(`Usajili umefungwa rasmi! Waliojirudia wamefutwa. Wachezaji halali kwenye ligi ni: ${uniqueUsers.length}. Ligi imeanza!`);
+            location.reload();
+        } else {
+            alert("Imeshindikana kusasisha hifadhi ya data.");
+        }
+    } catch (err) {
+        console.error(err);
+        alert("Hitilafu ya mtandao imetokea.");
+    }
 }
+
