@@ -348,15 +348,30 @@ async function adminResetLeague() {
             }
         });
 
-        // Hifadhi hali ya kufungwa na orodha safi isiyo na marudio kwenye JSONBin
+        // Kutengeneza ratiba ya mechi
+        let fixtures = [];
+        for (let i = 0; i < uniqueUsers.length; i++) {
+            for (let j = i + 1; j < uniqueUsers.length; j++) {
+                fixtures.push({
+                    home: uniqueUsers[i].team_name || uniqueUsers[i].full_name,
+                    away: uniqueUsers[j].team_name || uniqueUsers[j].full_name,
+                    home_score: "",
+                    away_score: "",
+                    status: "Pending"
+                });
+            }
+        }
+
+        // Hifadhi hali ya kufungwa, orodha safi, na ratiba kwenye JSONBin
         let updateRes = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'X-Master-Key': JSONBIN_API_KEY
             },
-            body: JSON.stringify({ users: uniqueUsers, registration_closed: true })
+            body: JSON.stringify({ users: uniqueUsers, fixtures: fixtures, registration_closed: true })
         });
+
 
         if (updateRes.ok) {
             localStorage.setItem('registration_closed', 'true');
