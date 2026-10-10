@@ -247,10 +247,35 @@ async function fetchLeagueTable() {
     }
 }
 
-// --- 9. RATIBA, WAFUNGAJI NA MECHI ZILIZOPITA ---
 async function fetchFixtures() {
     let container = document.getElementById('fixtures-container');
-    if (container) container.innerHTML = '<p>Hakuna ratiba zilizopangwa kwa sasa.</p>';
+    if (!container) return;
+    
+    container.innerHTML = "<p>Inapakia ratiba...</p>";
+    
+    try {
+        let db = await fetchDataFromBin();
+        let fixtures = db.fixtures || [];
+        
+        if (fixtures.length === 0) {
+            container.innerHTML = "<p>Hakuna ratiba zilizopangwa kwa sasa.</p>";
+            return;
+        }
+        
+        let html = "<ul style='list-style: none; padding: 0;'>";
+        fixtures.forEach((match, index) => {
+            html += `<li style='background: #222; margin-bottom: 10px; padding: 12px; border-radius: 6px; color: white;'>
+                <strong>Mechi ya ${index + 1}:</strong> ${match.home} vs ${match.away} 
+                <span style='float: right; color: #f1c40f;'>${match.home_score || '-'} : ${match.away_score || '-'}</span>
+            </li>`;
+        });
+        html += "</ul>";
+        
+        container.innerHTML = html;
+    } catch (err) {
+        console.error(err);
+        container.innerHTML = "<p>Imeshindikana kupakia ratiba.</p>";
+    }
 }
 
 async function fetchTopScorersAndAssists() {
