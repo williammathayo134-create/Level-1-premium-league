@@ -373,19 +373,38 @@ async function adminResetLeague() {
             }
         });
 
-        // Kutengeneza ratiba ya mechi
+            // Kutengeneza ratiba ya mechi kwa mfumo wa Raundi (Round-Robin)
         let fixtures = [];
-        for (let i = 0; i < uniqueUsers.length; i++) {
-            for (let j = i + 1; j < uniqueUsers.length; j++) {
-                fixtures.push({
-                    home: uniqueUsers[i].team_name || uniqueUsers[i].full_name,
-                    away: uniqueUsers[j].team_name || uniqueUsers[j].full_name,
-                    home_score: "",
-                    away_score: "",
-                    status: "Pending"
-                });
-            }
+        let teams = [...uniqueUsers];
+        
+        if (teams.length % 2 !== 0) {
+            teams.push({ full_name: "Mapumziko (Bye)", team_name: "Mapumziko (Bye)" });
         }
+
+        let totalRounds = teams.length - 1;
+        let halfSize = teams.length / 2;
+
+        for (let round = 0; round < totalRounds; round++) {
+            for (let i = 0; i < halfSize; i++) {
+                let team1 = teams[i];
+                let team2 = teams[teams.length - 1 - i];
+
+                if (team1.team_name !== "Mapumziko (Bye)" && team2.team_name !== "Mapumziko (Bye)" &&
+                    team1.full_name !== "Mapumziko (Bye)" && team2.full_name !== "Mapumziko (Bye)") {
+                    
+                    fixtures.push({
+                        home: team1.team_name || team1.full_name,
+                        away: team2.team_name || team2.full_name,
+                        home_score: "",
+                        away_score: "",
+                        status: "Pending"
+                    });
+                }
+            }
+            teams.splice(1, 0, teams.pop());
+        }
+        
+   
 
         // Hifadhi hali ya kufungwa, orodha safi, na ratiba kwenye JSONBin
         let updateRes = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
