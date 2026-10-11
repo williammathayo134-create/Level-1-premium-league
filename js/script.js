@@ -381,6 +381,73 @@ async function fetchPendingQueue() {
         container.innerHTML = "<p>Imeshindikana kupakia matokeo.</p>";
     }
 }
+async function approveMatch(index) {
+    try {
+        let db = await fetchDataFromBin();
+        if (!db.pending_matches || !db.pending_matches[index]) return;
+
+        let match = db.pending_matches[index];
+
+        if (!db.match_history) db.match_history = [];
+        db.match_history.push({
+            home: match.reporter,
+            away: match.opponent,
+            score: match.score,
+            scorer: match.scorer,
+            assist: match.assist,
+            status: "Approved"
+        });
+
+        db.pending_matches.splice(index, 1);
+
+        let response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': JSONBIN_API_KEY
+            },
+            body: JSON.stringify(db)
+        });
+
+        if (response.ok) {
+            alert('Matokeo yamethibitishwa rasmi!');
+            fetchPendingQueue();
+        } else {
+            alert('Imeshindikana kusasisha mfumo.');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Hitilafu imetokea.');
+    }
+}
+
+async function rejectMatch(index) {
+    try {
+        let db = await fetchDataFromBin();
+        if (!db.pending_matches || !db.pending_matches[index]) return;
+
+        db.pending_matches.splice(index, 1);
+
+        let response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': JSONBIN_API_KEY
+            },
+            body: JSON.stringify(db)
+        });
+
+        if (response.ok) {
+            alert('Matokeo yamekataaliwa na kufutwa.');
+            fetchPendingQueue();
+        } else {
+            alert('Imeshindikana kusasisha mfumo.');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Hitilafu imetokea.');
+    }
+    }
 
 // ADMIN: KUREFRESH / RESET LIGI (Inafuta ligi na kufungua usajili)
 async function adminResetLeague() {
