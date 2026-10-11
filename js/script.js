@@ -296,14 +296,57 @@ async function submitMatchResult() {
     let score = document.getElementById('match-score').value.trim();
     let scorer = document.getElementById('match-scorer-name').value.trim();
     let assist = document.getElementById('match-assist-name').value.trim();
-
+    
     if (!opponent || !score) {
         alert('Tafadhali jaza mpinzani na matokeo!');
         return;
     }
 
-    alert('Matokeo yametumwa kwa Admin kwa ajili ya uthibitisho!');
+    let currentUserStr = localStorage.getItem('l1p_current_user');
+    if (!currentUserStr) {
+        alert('Tafadhali ingia kwenye akaunti yako kwanza.');
+        return;
+    }
+    let currentUser = JSON.parse(currentUserStr);
+
+    try {
+        let db = await fetchDataFromBin();
+        if (!db.pending_matches) db.pending_matches = [];
+
+        // Hifadhi matokeo kwenye foleni ya kusubiri uthibitisho wako
+        db.pending_matches.push({
+            reporter: currentUser.team_name || currentUser.full_name,
+            opponent: opponent,
+            score: score,
+            scorer: scorer || 'Hakuna',
+            assist: assist || 'Hakuna',
+            timestamp: new Date().toISOString()
+        });
+
+        let response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': JSONBIN_API_KEY
+            },
+            body: JSON.stringify(db)
+        });
+
+        if (response.ok) {
+            alert('Matokeo yametumwa kwa Admin kwa ajili ya uthibitisho!');
+            document.getElementById('match-opponent').value = '';
+            document.getElementById('match-score').value = '';
+            document.getElementById('match-scorer-name').value = '';
+            document.getElementById('match-assist-name').value = '';
+        } else {
+            alert('Imeshindikana kutuma matokeo kwenye mfumo.');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Hitilafu ya mtandao imetokea.');
+    }
 }
+
 
 // --- 11. ADMIN: KUKAGUA NA KUREFRESH LIGI ---
 async function fetchPendingQueue() {
