@@ -352,7 +352,34 @@ async function submitMatchResult() {
 async function fetchPendingQueue() {
     let container = document.getElementById('admin-pending-container');
     if (!container) return;
-    container.innerHTML = '<p>Hakuna matokeo yanayosubiri uthibitisho.</p>';
+    
+    container.innerHTML = "<p>Inapakia matokeo yanayosubiri...</p>";
+    
+    try {
+        let db = await fetchDataFromBin();
+        let pending = db.pending_matches || [];
+        
+        if (pending.length === 0) {
+            container.innerHTML = "<p>Hakuna matokeo yanayosubiri uthibitisho.</p>";
+            return;
+        }
+        
+        let html = "<ul style='list-style: none; padding: 0;'>";
+        pending.forEach((match, index) => {
+            html += `<li style='background: #222; margin-bottom: 10px; padding: 12px; border-radius: 6px; color: white;'>
+                <strong>Mtumaji:</strong> ${match.reporter} vs ${match.opponent}<br>
+                <strong>Matokeo:</strong> ${match.score} | <strong>Mfungaji:</strong> ${match.scorer} | <strong>Assist:</strong> ${match.assist}<br>
+                <button onclick="approveMatch(${index})" style='background: #2ecc71; color: white; border: none; padding: 6px 12px; border-radius: 4px; margin-top: 8px; cursor: pointer;'>Kubali</button>
+                <button onclick="rejectMatch(${index})" style='background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 4px; margin-top: 8px; margin-left: 6px; cursor: pointer;'>Kataa</button>
+            </li>`;
+        });
+        html += "</ul>";
+        
+        container.innerHTML = html;
+    } catch (err) {
+        console.error(err);
+        container.innerHTML = "<p>Imeshindikana kupakia matokeo.</p>";
+    }
 }
 
 // ADMIN: KUREFRESH / RESET LIGI (Inafuta ligi na kufungua usajili)
