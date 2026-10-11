@@ -350,11 +350,68 @@ async function fetchFixtures() {
 }
 
 async function fetchTopScorersAndAssists() {
-    let scorers = document.getElementById('top-scorers-list');
-    let assists = document.getElementById('top-assists-list');
-    if (scorers) scorers.innerHTML = '<li>Bado hakuna takwimu.</li>';
-    if (assists) assists.innerHTML = '<li>Bado hakuna takwimu.</li>';
+    let scorersContainer = document.getElementById('top-scorers-list');
+    let assistsContainer = document.getElementById('top-assists-list');
+    
+    if (scorersContainer) scorersContainer.innerHTML = '<li>Inapakia wafungaji...</li>';
+    if (assistsContainer) assistsContainer.innerHTML = '<li>Inapakia assist...</li>';
+    
+    try {
+        let db = await fetchDataFromBin();
+        let history = db.match_history || [];
+        
+        if (history.length === 0) {
+            if (scorersContainer) scorersContainer.innerHTML = '<li>Bado hakuna takwimu.</li>';
+            if (assistsContainer) assistsContainer.innerHTML = '<li>Bado hakuna takwimu.</li>';
+            return;
+        }
+        
+        let scorersCount = {};
+        let assistsCount = {};
+        
+        history.forEach(match => {
+            if (match.scorer && match.scorer.trim() !== '' && match.scorer.toLowerCase() !== 'hakuna') {
+                let name = match.scorer.trim();
+                scorersCount[name] = (scorersCount[name] || 0) + 1;
+            }
+            if (match.assist && match.assist.trim() !== '' && match.assist.toLowerCase() !== 'hakuna') {
+                let name = match.assist.trim();
+                assistsCount[name] = (assistsCount[name] || 0) + 1;
+            }
+        });
+        
+        let sortedScorers = Object.entries(scorersCount).sort((a, b) => b[1] - a[1]);
+        if (scorersContainer) {
+            if (sortedScorers.length === 0) {
+                scorersContainer.innerHTML = '<li>Bado hakuna takwimu.</li>';
+            } else {
+                let html = '';
+                sortedScorers.forEach(([player, goals]) => {
+                    html += `<li><strong>${player}</strong> - ${goals} Magoli</li>`;
+                });
+                scorersContainer.innerHTML = html;
+            }
+        }
+        
+        let sortedAssists = Object.entries(assistsCount).sort((a, b) => b[1] - a[1]);
+        if (assistsContainer) {
+            if (sortedAssists.length === 0) {
+                assistsContainer.innerHTML = '<li>Bado hakuna takwimu.</li>';
+            } else {
+                let html = '';
+                sortedAssists.forEach(([player, assists]) => {
+                    html += `<li><strong>${player}</strong> - ${assists} Assist</li>`;
+                });
+                assistsContainer.innerHTML = html;
+            }
+        }
+    } catch (err) {
+        console.error(err);
+        if (scorersContainer) scorersContainer.innerHTML = '<li>Imeshindikana kupakia takwimu.</li>';
+        if (assistsContainer) assistsContainer.innerHTML = '<li>Imeshindikana kupakia takwimu.</li>';
+    }
 }
+
 
 async function fetchMatchHistory() {
     let container = document.getElementById('match-history-container');
