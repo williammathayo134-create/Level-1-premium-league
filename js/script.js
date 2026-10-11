@@ -218,34 +218,105 @@ function navigateTo(viewId) {
 async function fetchLeagueTable() {
     let tbody = document.getElementById('league-table-body');
     if (!tbody) return;
-
+    
     tbody.innerHTML = '<tr><td colspan="11">Inapakia msimamo...</td></tr>';
     
     try {
         let db = await fetchDataFromBin();
         let users = db.users || [];
-
-        tbody.innerHTML = '';
+        let history = db.match_history || [];
+        
         if (users.length === 0) {
             tbody.innerHTML = '<tr><td colspan="11">Hakuna timu zilizosajiliwa bado.</td></tr>';
             return;
         }
-
-        users.forEach((user, index) => {
-            let logoImg = user.team_logo ? `<img src="${user.team_logo}" width="30" height="30" style="border-radius: 50%;">` : '⚽';
-            tbody.innerHTML += `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td>${logoImg}</td>
-                    <td>${user.team_name || user.full_name}</td>
-                    <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
-                </tr>
-            `;
+        
+        let stats = {};
+        users.forEach(user => {
+            let name = user.team_name || user.full_name;
+            stats[name] = {
+                name: name,
+                logo: user.team_logo || '',
+                played: 0,
+                won: 0,
+                drawn: 0,
+                lost: 0,
+                gf: 0,
+                ga: 0,
+                gd: 0,
+                points: 0
+            };
+        });
+        
+        history.forEach(match => {
+            let home = match.home;
+            let away = match.away;
+            let scores = match.score.split('-').map(s => parseInt(s.trim()) || 0);
+            let homeScore = scores[0] || 0;
+            let awayScore = scores[1] || 0;
+            
+            if (stats[home]) {
+                stats[home].played++;
+                stats[home].gf += homeScore;
+                stats[home].ga += awayScore;
+                if (homeScore > awayScore) {
+                    stats[home].won++;
+                    stats[home].points += 3;
+                } else if (homeScore === awayScore) {
+                    stats[home].drawn++;
+                    stats[home].points += 1;
+                } else {
+                    stats[home].lost++;
+                }
+                stats[home].gd = stats[home].gf - stats[home].ga;
+            }
+            
+            if (stats[away]) {
+                stats[away].played++;
+                stats[away].gf += awayScore;
+                stats[away].ga += homeScore;
+                if (awayScore > homeScore) {
+                    stats[away].won++;
+                    stats[away].points += 3;
+                } else if (awayScore === homeScore) {
+                    stats[away].drawn++;
+                    stats[away].points += 1;
+                } else {
+                    stats[away].lost++;
+                }
+                stats[away].gd = stats[away].gf - stats[away].ga;
+            }
+        });
+        
+        let tableArr = Object.values(stats);
+        tableArr.sort((a, b) => {
+            if (b.points !== a.points) return b.points - a.points;
+            if (b.gd !== a.gd) return b.gd - a.gd;
+            return b.gf - a.gf;
+        });
+        
+        tbody.innerHTML = '';
+        tableArr.forEach((team, index) => {
+            let logoImg = team.logo ? `<img src="${team.logo}" width="30" height="30" style="border-radius: 50%;">` : '';
+            tbody.innerHTML += `<tr>
+                <td>${index + 1}</td>
+                <td>${logoImg}</td>
+                <td>${team.name}</td>
+                <td>${team.played}</td>
+                <td>${team.won}</td>
+                <td>${team.drawn}</td>
+                <td>${team.lost}</td>
+                <td>${team.gf}</td>
+                <td>${team.ga}</td>
+                <td>${team.gd}</td>
+                <td><strong>${team.points}</strong></td>
+            </tr>`;
         });
     } catch (err) {
+        console.error(err);
         tbody.innerHTML = '<tr><td colspan="11">Imeshindikana kupakia msimamo.</td></tr>';
     }
-}
+                        }
 
 async function fetchFixtures() {
     let container = document.getElementById('fixtures-container');
