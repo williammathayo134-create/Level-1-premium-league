@@ -420,13 +420,31 @@ async function fetchMatchHistory() {
 
 // --- 10. KUWASILISHA MATOKEO (Wachezaji) ---
 async function submitMatchResult() {
+    // 1. Kuzuia kwa mujibu wa Muda (Kuanzia saa 10:00 jioni [16:00] hadi saa 2:30 usiku [20:30])
+    let now = new Date();
+    let currentHour = now.getHours();
+    let currentMinute = now.getMinutes();
+    let currentTimeInMinutes = (currentHour * 60) + currentMinute;
+    
+    // Saa 10:00 jioni ni dakika 960 (16 * 60)
+    // Saa 2:30 usiku ni dakika 1230 (20 * 60 + 30)
+    let startTime = 16 * 60;       // 16:00 (Saa 10:00 Jioni)
+    let endTime = (20 * 60) + 30;  // 20:30 (Saa 2:30 Usiku)
+
+    if (currentTimeInMinutes < startTime || currentTimeInMinutes > endTime) {
+        alert('Samahani! Dirisha la kutuma matokeo limefungwa. Matokeo yanapokelewa kuanzia saa 10:00 jioni hadi saa 2:30 usiku tu.');
+        return;
+    }
+
+    // 2. Kuchukua taarifa zilizojazwa kwenye fomu
     let opponent = document.getElementById('match-opponent').value.trim();
     let score = document.getElementById('match-score').value.trim();
     let scorer = document.getElementById('match-scorer-name').value.trim();
     let assist = document.getElementById('match-assist-name').value.trim();
     
-    if (!opponent || !score) {
-        alert('Tafadhali jaza mpinzani na matokeo!');
+    // 3. Kuzuia kama kuna sehemu imeachwa wazi (Validation)
+    if (!opponent || !score || !scorer || !assist) {
+        alert('Tafadhali jaza taarifa zote: Mpinzani, Matokeo, Mfungaji, na Assist! Hakuna sehemu inayotakiwa kuachwa wazi.');
         return;
     }
 
@@ -441,13 +459,13 @@ async function submitMatchResult() {
         let db = await fetchDataFromBin();
         if (!db.pending_matches) db.pending_matches = [];
 
-        // Hifadhi matokeo kwenye foleni ya kusubiri uthibitisho wako
+        // Kutuma taarifa kwenda kwenye foleni ya Admin (Pending)
         db.pending_matches.push({
             reporter: currentUser.team_name || currentUser.full_name,
             opponent: opponent,
             score: score,
-            scorer: scorer || 'Hakuna',
-            assist: assist || 'Hakuna',
+            scorer: scorer,
+            assist: assist,
             timestamp: new Date().toISOString()
         });
 
@@ -473,7 +491,7 @@ async function submitMatchResult() {
         console.error(err);
         alert('Hitilafu ya mtandao imetokea.');
     }
-}
+        }
 
 
 // --- 11. ADMIN: KUKAGUA NA KUREFRESH LIGI ---
@@ -496,7 +514,8 @@ async function fetchPendingQueue() {
         pending.forEach((match, index) => {
             html += `<li style='background: #222; margin-bottom: 10px; padding: 12px; border-radius: 6px; color: white;'>
                 <strong>Mtumaji:</strong> ${match.reporter} vs ${match.opponent}<br>
-                <strong>Matokeo:</strong> ${match.score} | <strong>Mfungaji:</strong> ${match.scorer} | <strong>Assist:</strong> ${match.assist}<br>
+                <strong>Matokeo:</strong> ${match.score} | <strong>Mfungaji
+                :</strong> ${match.scorer} | <strong>Assist:</strong> ${match.assist}<br>
                 <button onclick="approveMatch(${index})" style='background: #2ecc71; color: white; border: none; padding: 6px 12px; border-radius: 4px; margin-top: 8px; cursor: pointer;'>Kubali</button>
                 <button onclick="rejectMatch(${index})" style='background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 4px; margin-top: 8px; margin-left: 6px; cursor: pointer;'>Kataa</button>
             </li>`;
