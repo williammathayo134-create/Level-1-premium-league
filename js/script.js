@@ -653,9 +653,24 @@ async function adminResetLeague() {
             }
         });
 
-            // Kutengeneza ratiba ya mechi kwa mfumo wa Raundi (Round-Robin)
-        let fixtures = [];
-        let teams = [...uniqueUsers];
+                // 1. Kusanya majina ya timu zote zilizokwishacheza kwenye match_history
+    let playedTeams = new Set();
+    if (db.match_history) {
+        db.match_history.forEach(m => {
+            playedTeams.add(m.home);
+            playedTeams.add(m.away);
+        });
+    }
+
+    // 2. Chuja tubakize tu zile ambazo BADO hazijacheza
+    let remainingTeams = uniqueUsers.filter(user => {
+        let teamName = user.team_name || user.full_name;
+        return !playedTeams.has(teamName);
+    });
+
+    let fixtures = [];
+    let teams = [...remainingTeams
+                ];
         
         if (teams.length % 2 !== 0) {
             teams.push({ full_name: "Mapumziko (Bye)", team_name: "Mapumziko (Bye)" });
