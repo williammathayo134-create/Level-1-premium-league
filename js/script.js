@@ -670,13 +670,15 @@ async function adminResetLeague() {
                 if (team1.team_name !== "Mapumziko (Bye)" && team2.team_name !== "Mapumziko (Bye)" &&
                     team1.full_name !== "Mapumziko (Bye)" && team2.full_name !== "Mapumziko (Bye)") {
                     
-                    fixtures.push({
-                        home: team1.team_name || team1.full_name,
-                        away: team2.team_name || team2.full_name,
-                        home_score: "",
-                        away_score: "",
-                        status: "Pending"
-                    });
+               fixtures.push({
+                home: team1.team_name || team1.full_name,
+                away: team2.team_name || team2.full_name,
+                home_score: "",
+                away_score: "",
+                status: "Pending",
+                date: "14/10/2026"
+            });
+                    
                 }
             }
             teams.splice(1, 0, teams.pop());
