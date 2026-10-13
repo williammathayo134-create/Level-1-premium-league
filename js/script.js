@@ -548,13 +548,25 @@ async function approveMatch(index) {
         alert('Hitilafu imetokea.');
     }
 }
-
 async function rejectMatch(index) {
     try {
         let db = await fetchDataFromBin();
         if (!db.pending_matches || !db.pending_matches[index]) return;
 
+        let rejectedMatch = db.pending_matches[index];
+
+        // 1. Futa kwenye foleni ya kusubiri ya Admin
         db.pending_matches.splice(index, 1);
+
+        // 2. Irudishe kwenye ratiba (Reschedule) ili wacheze tena
+        if (!db.fixtures) db.fixtures = [];
+        db.fixtures.push({
+            home: rejectedMatch.reporter,
+            away: rejectedMatch.opponent,
+            home_score: "",
+            away_score: "",
+            status: "Rescheduled"
+        });
 
         let response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
             method: 'PUT',
@@ -566,7 +578,7 @@ async function rejectMatch(index) {
         });
 
         if (response.ok) {
-            alert('Matokeo yamekataaliwa na kufutwa.');
+            alert('Mechi imekataliwa na kurudishwa kwenye ratiba ili wacheze tena!');
             fetchPendingQueue();
         } else {
             alert('Imeshindikana kusasisha mfumo.');
@@ -574,8 +586,9 @@ async function rejectMatch(index) {
     } catch (err) {
         console.error(err);
         alert('Hitilafu imetokea.');
+  
     }
-    }
+}
 
 // ADMIN: KUREFRESH / RESET LIGI (Inafuta ligi na kufungua usajili)
 async function adminResetLeague() {
