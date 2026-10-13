@@ -317,36 +317,38 @@ async function fetchLeagueTable() {
         tbody.innerHTML = '<tr><td colspan="11">Imeshindikana kupakia msimamo.</td></tr>';
     }
                         }
-
 async function fetchFixtures() {
     let container = document.getElementById('fixtures-container');
     if (!container) return;
-    
+
     container.innerHTML = "<p>Inapakia ratiba...</p>";
-    
+
     try {
         let db = await fetchDataFromBin();
         let fixtures = db.fixtures || [];
-        
+
         if (fixtures.length === 0) {
-            container.innerHTML = "<p>Hakuna ratiba zilizopangwa kwa sasa.</p>";
+            container.innerHTML = "<p>Hakuna ratiba zilizopangwa kwa sasa</p>";
             return;
         }
-        
+
         let html = "<ul style='list-style: none; padding: 0;'>";
         fixtures.forEach((match, index) => {
-            html += `<li style='background: #222; margin-bottom: 10px; padding: 12px; border-radius: 6px; color: white;'>
+            let matchDate = match.date ? `<br><small style='color: #3498db;'>Tarehe: ${match.date} (Saa 10:00 Jioni - 2:30 Usiku)</small>` : '';
+            html += `<li style='background: #222; margin-bottom: 10px; padding: 10px; border-radius: 5px;'>
                 <strong>Mechi ya ${index + 1}:</strong> ${match.home} vs ${match.away} 
-                <span style='float: right; color: #f1c40f;'>${match.home_score || '-'} : ${match.away_score || '-'}</span>
+                ${matchDate}
+                <span style='float: right; color: #f1c40f;'>-:-</span>
             </li>`;
         });
         html += "</ul>";
-        
+
         container.innerHTML = html;
     } catch (err) {
         console.error(err);
         container.innerHTML = "<p>Imeshindikana kupakia ratiba.</p>";
-    }
+  
+}
 }
 
 async function fetchTopScorersAndAssists() {
