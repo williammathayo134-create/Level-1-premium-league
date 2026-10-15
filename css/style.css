@@ -16,7 +16,7 @@ body::before {
     width: 100%;
     height: 100%;
     z-index: -1;
-    background-image: url('IMG_3b376298-5c26-49d5-b41b-4bcc8b1469e1-1.jpg');
+    background-image: url('../IMG_3b376298-5c26-49d5-b41b-4bcc8b1469e1-1.jpg');
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
