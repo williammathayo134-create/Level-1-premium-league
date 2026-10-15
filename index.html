@@ -4,9 +4,132 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Level 1 Premium League (DLS)</title>
-    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
+            position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-color: #0b192c;
+        }
+
+        /* Tabaka la nyuma lenye picha zinazobadilika na kuteleza za DLS 2026 */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            animation: dlsPlayerBackgroundSlide 60s infinite ease-in-out;
+            filter: brightness(0.35) contrast(1.15);
+        }
+
+        @keyframes dlsPlayerBackgroundSlide {
+            0%   { background-image: url('css/IMG_3b376298-5c26-49d5-b41b-4bcc8b1469e1-1.jpg'); }
+            6%   { background-image: url('css/IMG_4e4e53fa-f3d8-401d-bec8-602b233029bd-1.jpg'); }
+            12%  { background-image: url('css/IMG_696cffe4-bfac-455b-936c-536547306f5d-1.jpg'); }
+            18%  { background-image: url('css/IMG_732de6c6-9be2-4ada-92b2-f735fd0d1d5e-1.jpg'); }
+            24%  { background-image: url('css/IMG_a243f86f-7421-4459-99ce-f8dcc7bf0f93-1.jpg'); }
+            29%  { background-image: url('css/IMG_a929a8a4-cc63-40a6-92c1-94f14cb9dbad-1.jpg'); }
+            35%  { background-image: url('css/IMG_b561d11a-4270-415b-9962-4ab0056a531f-1.jpg'); }
+            41%  { background-image: url('css/IMG_b883064d-1145-493a-9962-f19105b52b6c-1.jpg'); }
+            47%  { background-image: url('css/IMG_b683064d-1145-493a-9962-f19105b52b6c.jpg'); }
+            53%  { background-image: url('css/IMG_c07a5cf3-d4b4-4340-8532-b2a2daeeef11-1.jpg'); }
+            58%  { background-image: url('css/IMG_ca8b9e37-8fe2-4567-a501-860cfbd0cd1c-1.jpg'); }
+            64%  { background-image: url('css/IMG_co5c60bf-7dd5-4ccd-b496-118fa4ad3efc-1.jpg'); }
+            70%  { background-image: url('css/IMG_co5c60bf-7dd5-4ccd-b496-118fa4ad3efc.jpg'); }
+            76%  { background-image: url('css/IMG_ea97ed39-df7f-42b5-bfa1-f2bbb907a1a3-1.jpg'); }
+            82%  { background-image: url('css/Screenshot_20261015-123549.png'); }
+            88%  { background-image: url('css/Screenshot_20261015-123609.png'); }
+            100% { background-image: url('css/IMG_3b376298-5c26-49d5-b41b-4bcc8b1469e1-1.jpg'); }
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+        .card {
+            background: #ffffff;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3, h4 {
+            color: #222;
+            text-align: center;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .tab-buttons button {
+            background: #4e757d;
+        }
+        .menu-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .menu-nav button {
+            flex: 1;
+            min-width: 120px;
+            background: #20e745;
+            color: #000;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            white-space: nowrap;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+            font-size: 13px;
+            color: #333;
+        }
+        th {
+            background-color: #194340;
+            color: white;
+        }
+    </style>
 </head>
-<body style="background: url('css/IMG_3b376298-5c26-49d5-b41b-4bcc8b1469e1-1.jpg') no-repeat center center fixed; background-size: cover;">
+<body>
     
     <div class="container">
         <h1>Level 1 Premium League (DLS)</h1>
@@ -56,7 +179,7 @@
                 <p>Aina ya Akaunti: <span id="user-role-badge" style="font-weight: bold; color: darkblue;"></span></p>
                 <button onclick="handleLogout()" style="background: #dc3545; color: white;">Toka nje (Logout)</button>
 
-                <!-- Menyu Kuu ya Kurasa Zinazojitegemea -->
+                <!-- Menyu Kuu ya Kurasa Zinajitegemea -->
                 <div class="menu-nav" style="margin-top: 15px;">
                     <button onclick="navigateTo('view-table')">Msimamo wa Ligi</button>
                     <button onclick="navigateTo('view-fixtures')">Ratiba za Mechi</button>
@@ -128,7 +251,7 @@
                 </div>
             </div>
 
-            <!-- E. UKURASA WA KUWASILISHA MATOKEO (Wafayaji) -->
+            <!-- E. UKURASA WA KUWASILISHA MATOKEO -->
             <div id="view-submit" class="sub-view" style="display:none;">
                 <div class="card">
                     <h3>Wasilisha Matokeo ya Mechi</h3>
@@ -139,12 +262,11 @@
                     <label>Weka Picha ya Uthibitisho (Screenshot):</label>
                     <input type="file" id="match-screenshot" accept="image/*">
                     <button onclick="submitMatchResult()">Tuma kwa Admin</button>
-                    <button onclick="adminToggleAndStartLeague()" style="background: #e74c3c; color: white; padding: 12px 20px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; display: block; margin-bottom: 15px;">Funga Usajili na Anzisha Ligi</button>
-
+                    <button onclick="adminToggleAndStartLeague()" style="background: #e74c3c; color: white; padding: 12px 20px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; display: block; margin-top: 15px; margin-bottom: 15px;">Funga Usajili na Anzisha Ligi</button>
                 </div>
             </div>
 
-            <!-- F. ADMIN PANEL: KUTHIBITISHA NA KUREFRESH LIGI -->
+            <!-- F. ADMIN PANEL -->
             <div id="view-admin" class="sub-view" style="display:none;">
                 <div class="card" style="border: 2px solid #ffc107;">
                     <h3>Usimamizi wa Admin (Richard)</h3>
