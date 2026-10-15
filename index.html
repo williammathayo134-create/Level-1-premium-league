@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="sw">
 <head>
@@ -17,41 +16,79 @@
             background-color: #0b192c;
         }
 
-        /* Tabaka la nyuma lenye picha zinazobadilika na kuteleza za DLS 2026 */
-        body::before {
-            content: "";
-            position: fixed;
+        /* Sehemu ya Slider ya Picha juu ya Tovuti */
+        .slider-section {
+            width: 100%;
+            max-width: 600px;
+            margin: 15px auto 10px auto;
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            background-color: #112233;
+            border: 2px solid #ffc107;
+        }
+
+        .slider-container {
+            position: relative;
+            width: 100%;
+            height: 250px;
+        }
+
+        .slide-item {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
             background-size: cover;
             background-position: center center;
             background-repeat: no-repeat;
-            animation: dlsPlayerBackgroundSlide 60s infinite ease-in-out;
-            filter: brightness(0.35) contrast(1.15);
         }
 
-        @keyframes dlsPlayerBackgroundSlide {
-            0%   { background-image: url('css/IMG_3b376298-5c26-49d5-b41b-4bcc8b1469e1-1.jpg'); }
-            6%   { background-image: url('css/IMG_4e4e53fa-f3d8-401d-bec8-602b233029bd-1.jpg'); }
-            12%  { background-image: url('css/IMG_696cffe4-bfac-455b-936c-536547306f5d-1.jpg'); }
-            18%  { background-image: url('css/IMG_732de6c6-9be2-4ada-92b2-f735fd0d1d5e-1.jpg'); }
-            24%  { background-image: url('css/IMG_a243f86f-7421-4459-99ce-f8dcc7bf0f93-1.jpg'); }
-            29%  { background-image: url('css/IMG_a929a8a4-cc63-40a6-92c1-94f14cb9dbad-1.jpg'); }
-            35%  { background-image: url('css/IMG_b561d11a-4270-415b-9962-4ab0056a531f-1.jpg'); }
-            41%  { background-image: url('css/IMG_b883064d-1145-493a-9962-f19105b52b6c-1.jpg'); }
-            47%  { background-image: url('css/IMG_b683064d-1145-493a-9962-f19105b52b6c.jpg'); }
-            53%  { background-image: url('css/IMG_c07a5cf3-d4b4-4340-8532-b2a2daeeef11-1.jpg'); }
-            58%  { background-image: url('css/IMG_ca8b9e37-8fe2-4567-a501-860cfbd0cd1c-1.jpg'); }
-            64%  { background-image: url('css/IMG_co5c60bf-7dd5-4ccd-b496-118fa4ad3efc-1.jpg'); }
-            70%  { background-image: url('css/IMG_co5c60bf-7dd5-4ccd-b496-118fa4ad3efc.jpg'); }
-            76%  { background-image: url('css/IMG_ea97ed39-df7f-42b5-bfa1-f2bbb907a1a3-1.jpg'); }
-            82%  { background-image: url('css/Screenshot_20261015-123549.png'); }
-            88%  { background-image: url('css/Screenshot_20261015-123609.png'); }
-            100% { background-image: url('css/IMG_3b376298-5c26-49d5-b41b-4bcc8b1469e1-1.jpg'); }
+        .slide-item.active {
+            opacity: 1;
         }
+
+        .slide-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            color: #ffc107;
+            padding: 8px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Vifungo vya Mishale (◄ na ►) kama vile kwenye mfumo wa ICOT */
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            font-size: 22px;
+            padding: 10px 15px;
+            cursor: pointer;
+            z-index: 10;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+
+        .slider-btn:hover {
+            background: rgba(255, 193, 7, 0.8);
+            color: #000;
+        }
+
+        .prev-btn { left: 10px; }
+        .next-btn { right: 10px; }
 
         .container {
             max-width: 600px;
@@ -131,6 +168,44 @@
     </style>
 </head>
 <body>
+
+    <!-- SLIDER YA PICHA ZENYE MISHALE (KAMA ICOT) -->
+    <div class="slider-section">
+        <div class="slider-container" id="dlsSlider">
+            <div class="slide-item active" style="background-image: url('css/IMG_3b376298-5c26-49d5-b41b-4bcc8b1469e1-1.jpg');">
+                <div class="slide-caption">Level 1 Premium League - DLS 2026</div>
+            </div>
+            <div class="slide-item" style="background-image: url('css/IMG_4e4e53fa-f3d8-401d-bec8-602b233029bd-1.jpg');">
+                <div class="slide-caption">Wachezaji na Nyota wa Ligi</div>
+            </div>
+            <div class="slide-item" style="background-image: url('css/IMG_696cffe4-bfac-455b-936c-536547306f5d-1.jpg');">
+                <div class="slide-caption">Mapambano Makali ya Kombe</div>
+            </div>
+            <div class="slide-item" style="background-image: url('css/IMG_732de6c6-9be2-4ada-92b2-f735fd0d1d5e-1.jpg');">
+                <div class="slide-caption">Viwanja Vya Kitendewa Kazi</div>
+            </div>
+            <div class="slide-item" style="background-image: url('css/IMG_a243f86f-7421-4459-99ce-f8dcc7bf0f93-1.jpg');">
+                <div class="slide-caption">Viongozi na Mabingwa wa Soka</div>
+            </div>
+            <div class="slide-item" style="background-image: url('css/IMG_a929a8a4-cc63-40a6-92c1-94f14cb9dbad-1.jpg');">
+                <div class="slide-caption">Viwango vya Juu vya Ushindani</div>
+            </div>
+            <div class="slide-item" style="background-image: url('css/IMG_b561d11a-4270-415b-9962-4ab0056a531f-1.jpg');">
+                <div class="slide-caption">Timu Bora za Ligi Kuu</div>
+            </div>
+            <div class="slide-item" style="background-image: url('css/IMG_b883064d-1145-493a-9962-f19105b52b6c-1.jpg');">
+                <div class="slide-caption">Makamanda wa Ushindi</div>
+            </div>
+            <div class="slide-item" style="background-image: url('css/IMG_c07a5cf3-d4b4-4340-8532-b2a2daeeef11-1.jpg');">
+                <div class="slide-caption">Matukio Muhimu ya Mechi</div>
+            </div>
+            <div class="slide-item" style="background-image: url('css/IMG_ea97ed39-df7f-42b5-bfa1-f2bbb907a1a3-1.jpg');">
+                <div class="slide-caption">Wafungaji Bora na Mabao Hatari</div>
+            </div>
+        </div>
+        <button class="slider-btn prev-btn" onclick="changeSlide(-1)">&#10094;</button>
+        <button class="slider-btn next-btn" onclick="changeSlide(1)">&#10095;</button>
+    </div>
     
     <div class="container">
         <h1>Level 1 Premium League (DLS)</h1>
@@ -144,7 +219,7 @@
                     <button onclick="switchTab('register')">Jisajili (Mgeni)</button>
                 </div>
 
-                <!-- Fomu ya Kuingia (ID ya Mchezaji au Password ya Admin 'Richard') -->
+                <!-- Fomu ya Kuingia -->
                 <div id="login-form" class="form-box">
                     <h3>Ingia kwenye Mfumo</h3>
                     <input type="text" id="login-id" placeholder="Weka ID yako au Password ya Admin">
@@ -162,7 +237,7 @@
             </div>
         </div>
 
-        <!-- 2. UKURASA WA PILI: USAJILI WA TIMU NA LOGO (KWA MCHEZAJI MPYA) -->
+        <!-- 2. UKURASA WA PILI: USAJILI WA TIMU NA LOGO -->
         <div id="team-setup-section" class="page-view" style="display:none;">
             <div class="card">
                 <h2>Sajili Timu Yako</h2>
@@ -187,7 +262,6 @@
                     <button onclick="navigateTo('view-scorers')">Wafungaji & Assist</button>
                     <button onclick="navigateTo('view-history')">Mechi Zilizopita</button>
                     <button onclick="navigateTo('view-submit')">Wasilisha Matokeo</button>
-                    <!-- Kitufe Maalum cha Admin -->
                     <button id="admin-menu-btn" onclick="navigateTo('view-admin')" style="display:none; background: #ffc107; color: #000;">Admin Panel</button>
                 </div>
             </div>
@@ -283,6 +357,28 @@
         </div>
     </div>
 
+    <!-- JavaScript ya Kuendesha Slider yenye Mishale -->
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide-item');
+        
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            currentSlide = (index + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        // Kujibadilisha yenyewe kila baada ya sekunde 5
+        setInterval(() => {
+            changeSlide(1);
+        }, 5000);
+    </script>
+
     <script src="js/script.js"></script>
 </body>
-</html>
+    </html>
+                        
