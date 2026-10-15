@@ -23,7 +23,6 @@ body::before {
     animation: dlsPlayerBackgroundSlide 45s infinite ease-in-out;
     filter: brightness(0.35) contrast(1.15);
 }
-
 @keyframes dlsPlayerBackgroundSlide {
     0%   { background-image: url('IMG_3b376298-5c26-49d5-b41b-4bcc8b1469e1-1.jpg'); }
     6%   { background-image: url('IMG_4e4e53fa-f3d8-401d-bec8-602b233029bd-1.jpg'); }
