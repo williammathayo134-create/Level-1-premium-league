@@ -66,7 +66,7 @@
             letter-spacing: 0.5px;
         }
 
-        /* Vifungo vya Mishale (◄ na ►) kama vile kwenye mfumo wa ICOT */
+        /* Vifungo vya Mishale (◄ na ►) */
         .slider-btn {
             position: absolute;
             top: 50%;
@@ -169,26 +169,11 @@
 </head>
 <body>
 
-    <!-- SLIDER YA PICHA HALISI ZA WACHEZAJI ZENYE MISHALE -->
+    <!-- SLIDER YA PICHA HALISI -->
     <div class="slider-section">
         <div class="slider-container" id="dlsSlider">
-            <div class="slide-item active" style="background-image: url('css/18378.png');">
-                <div class="slide-caption">Level 1 Premium League - DLS 2026</div>
-            </div>
-            <div class="slide-item" style="background-image: url('css/18440.jpg');">
-                <div class="slide-caption">Nyota na Wachezaji wa Ligi</div>
-            </div>
-            <div class="slide-item" style="background-image: url('css/18444.jpg');">
-                <div class="slide-caption">Mapambano Makali ya Kombe</div>
-            </div>
-            <div class="slide-item" style="background-image: url('css/18443.jpg');">
-                <div class="slide-caption">Viwango vya Juu vya Ushindani</div>
-            </div>
-            <div class="slide-item" style="background-image: url('css/18442.jpg');">
-                <div class="slide-caption">Timu Bora na Mabingwa</div>
-            </div>
-            <div class="slide-item" style="background-image: url('css/18450.jpg');">
-                <div class="slide-caption">Makamanda wa Ushindi</div>
+            <div class="slide-item active" style="background-image: url('Screenshot_20261015-123609.png');">
+                <div class="slide-caption">Level 1 Premium League - DLS 2026 (Kikosi Bora)</div>
             </div>
         </div>
         <button class="slider-btn prev-btn" onclick="changeSlide(-1)">&#10094;</button>
@@ -345,7 +330,7 @@
         </div>
     </div>
 
-    <!-- JavaScript ya Kuendesha Slider yenye Mishale -->
+    <!-- JavaScript ya Kuendesha Slider -->
     <script>
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide-item');
@@ -360,7 +345,6 @@
             showSlide(currentSlide + direction);
         }
 
-        // Kujibadilisha yenyewe kila baada ya sekunde 5
         setInterval(() => {
             changeSlide(1);
         }, 5000);
@@ -368,4 +352,5 @@
 
     <script src="js/script.js"></script>
 </body>
-</html>
+                </html>
+    
