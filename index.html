@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Level 1 Premium League (DLS)</title>
     <style>
-        /* Background ya Full Screen yenye picha zote zinazobadilika na kuteleza nyuma ya tovuti nzima */
+        /* Background ya Full Screen inayobadilika kupitia JavaScript */
         body {
             margin: 0;
             padding: 0;
@@ -15,8 +15,13 @@
             min-height: 100vh;
             overflow-x: hidden;
             background-color: #0b192c;
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            transition: background-image 1s ease-in-out;
         }
 
+        /* Tabaka la giza kidogo ili maandishi yasomeke vizuri juu ya picha */
         body::before {
             content: "";
             position: fixed;
@@ -25,20 +30,7 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            background-size: cover;
-            background-position: center center;
-            background-repeat: no-repeat;
-            animation: fullScreenSlide 45s infinite ease-in-out;
-            filter: brightness(0.35) contrast(1.15);
-        }
-
-        @keyframes fullScreenSlide {
-            0%   { background-image: url('Screenshot_20261015-123609.png'); }
-            20%  { background-image: url('Screenshot_20261015-123549.png'); }
-            40%  { background-image: url('18440.jpg'); }
-            60%  { background-image: url('18444.jpg'); }
-            80%  { background-image: url('18443.jpg'); }
-            100% { background-image: url('Screenshot_20261015-123609.png'); }
+            background: rgba(11, 25, 44, 0.75);
         }
 
         .container {
@@ -272,7 +264,26 @@
         </div>
     </div>
 
+    <!-- JavaScript ya Kubadilisha Background ya Picha Zote Kiotomatiki -->
+    <script>
+        const bgImages = [
+            'Screenshot_20261015-123609.png',
+            'Screenshot_20261015-123549.png'
+            // Kama utaongeza picha nyingine hapa, ziandike kwa mfano: 'picha2.jpg', 'picha3.jpg'
+        ];
+
+        let bgIndex = 0;
+        function changeBackground() {
+            document.body.style.backgroundImage = `url('${bgImages[bgIndex]}')`;
+            bgIndex = (bgIndex + 1) % bgImages.length;
+        }
+
+        // Badilisha picha mara ya kwanza na kisha kila baada ya sekunde 4
+        changeBackground();
+        setInterval(changeBackground, 4000);
+    </script>
+
     <script src="js/script.js"></script>
 </body>
     </html>
-    
+                    
