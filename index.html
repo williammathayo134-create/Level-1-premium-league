@@ -266,24 +266,40 @@
         </div>
     </div>
 
-    <!-- JavaScript ya Kubadilisha Background ya Picha Zote Kiotomatiki -->
-        <script>
-        // Hii inatengeneza orodha ya picha kutoka 1.jpg hadi 17.jpg zilizopo ndani ya folda ya css
-        const bgImages = [];
-        for (let i = 1; i <= 17; i++) {
-            bgImages.push(`css/${i}.jpg`);
+ <!-- Javascript ya Kubadilisha Background na Kusimamia Vifungo -->
+<script>
+    // 1. Script ya kubadili Background za picha 17
+    const bgImages = [];
+    for (let i = 1; i <= 17; i++) {
+        bgImages.push(`css/${i}.jpg`);
+    }
+    
+    let bgIndex = 0;
+    function changeBackground() {
+        if (bgImages.length > 0) {
+            document.body.style.backgroundImage = `url('${bgImages[bgIndex]}')`;
+            bgIndex = (bgIndex + 1) % bgImages.length;
         }
+    }
+    changeBackground();
+    setInterval(changeBackground, 5000);
 
-        let bgIndex = 0;
-        function changeBackground() {
-            if (bgImages.length > 0) {
-                document.body.style.backgroundImage = `url('${bgImages[bgIndex]}')`;
-                bgIndex = (bgIndex + 1) % bgImages.length;
-            }
+    // 2. Script ya kubadili kurasa (Tabs & Views)
+    function switchTab(tabName) {
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        if (loginForm) loginForm.style.display = (tabName === 'login') ? 'block' : 'none';
+        if (registerForm) registerForm.style.display = (tabName === 'register') ? 'block' : 'none';
+    }
+
+    function navigateTo(viewId) {
+        const views = document.querySelectorAll('.sub-view, .page-view');
+        views.forEach(v => v.style.display = 'none');
+        
+        const target = document.getElementById(viewId);
+        if (target) {
+            target.style.display = 'block';
         }
-
-        // Anza kubadilisha picha mara moja na kila baada ya sekunde 5
-        changeBackground();
-        setInterval(changeBackground, 5000);
-        </script>
-                    
+    }
+            </script>
+    
