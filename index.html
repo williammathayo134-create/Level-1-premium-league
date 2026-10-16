@@ -275,48 +275,44 @@
         </div>
     </div>
 
-    <!-- Javascript ya Kubadilisha Background na Kusimamia Vifungo -->
-    <script>
-        // 1. Script ya kubadili Background za picha 17
-        const bgImages = [];
-        for (let i = 1; i <= 17; i++) {
-            bgImages.push(`css/${i}.jpg`);
+   <script>
+    // 1. Script ya kubadili Background za picha 17
+    const bgImages = [];
+    for (let i = 1; i <= 17; i++) {
+        bgImages.push(`css/${i}.jpg`);
+    }
+    
+    let bgIndex = 0;
+    function changeBackground() {
+        if (bgImages.length > 0) {
+            document.body.style.backgroundImage = `url('${bgImages[bgIndex]}')`;
+            bgIndex = (bgIndex + 1) % bgImages.length;
         }
+    }
+    changeBackground();
+    setInterval(changeBackground, 5000);
+    function switchTab(tabName) {
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
         
-        let bgIndex = 0;
-        function changeBackground() {
-            if (bgImages.length > 0) {
-                document.body.style.backgroundImage = `url('${bgImages[bgIndex]}')`;
-                bgIndex = (bgIndex + 1) % bgImages.length;
-            }
+        if (tabName == 'login') {
+            if (loginForm) loginForm.style.setProperty('display', 'block', 'important');
+            if (registerForm) registerForm.style.setProperty('display', 'none', 'important');
+        } else if (tabName === 'register') {
+            if (loginForm) loginForm.style.setProperty('display', 'none', 'important');
+            if (registerForm) registerForm.style.setProperty('display', 'block', 'important');
         }
-        changeBackground();
-        setInterval(changeBackground, 5000);
+    }
+       
 
-        // 2. Script ya kubadili kurasa (Tabs & Views) kwa usahihi kabisa
-        function switchTab(tabName) {
-            const loginForm = document.getElementById('login-form');
-            const registerForm = document.getElementById('register-form');
-            
-            if (tabName === 'login') {
-                if (loginForm) loginForm.style.setProperty('display', 'block', 'important');
-                if (registerForm) registerForm.style.setProperty('display', 'none', 'important');
-            } else if (tabName === 'register') {
-                if (loginForm) loginForm.style.setProperty('display', 'none', 'important');
-                if (registerForm) registerForm.style.setProperty('display', 'block', 'important');
-            }
+    function navigateTo(viewId) {
+        const views = document.querySelectorAll('.sub-view, .page-view');
+        views.forEach(v => v.style.display = 'none');
+        
+        const target = document.getElementById(viewId);
+        if (target) {
+            target.style.display = 'block';
         }
-
-        function navigateTo(viewId) {
-            const views = document.querySelectorAll('.sub-view, .page-view');
-            views.forEach(v => v.style.setProperty('display', 'none', 'important'));
-            
-            const target = document.getElementById(viewId);
-            if (target) {
-                target.style.setProperty('display', 'block', 'important');
-            }
-        }
-    </script>
-</body>
-                </html>
-
+    }
+   </script>
+   
