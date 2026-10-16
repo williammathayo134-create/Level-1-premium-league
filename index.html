@@ -19,6 +19,7 @@
             background-position: center center;
             background-repeat: no-repeat;
             transition: background-image 1s ease-in-out;
+            filter: saturate(1.3) brightness(1.05);
         }
 
         /* Tabaka la giza kidogo ili maandishi yasomeke vizuri juu ya picha */
@@ -40,14 +41,22 @@
             position: relative;
             z-index: 1;
         }
-.card {
-    background: rgba(255, 255, 255, 0.25) !important;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-}
+        .card {
+            background: rgba(255, 255, 255, 0.25) !important;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 10;
+        }
+
+        .card button, .card input, .card select {
+            position: relative;
+            z-index: 20;
+            pointer-events: auto !important;
+        }
         
         h1, h2, h3, h4 {
             color: #222;
@@ -176,7 +185,7 @@
             </div>
 
             <!-- A. UKURASA WA MSIMAMO WA LIGI -->
-            <div id="view-table" class="sub-view">
+            <div id="view-table" class="sub-view" style="display:none;">
                 <div class="card">
                     <h3>Msimamo wa Ligi (Ligi Kuu / Mabingwa / Shirikisho)</h3>
                     <div style="overflow-x: auto;">
@@ -263,45 +272,51 @@
                 </div>
             </div>
 
-        </div><!-- Javascript ya Kubadilisha Background na Kusimamia Vifungo -->
-<script>
-    // 1. Script ya kubadili Background za picha 17
-    const bgImages = [];
-    for (let i = 1; i <= 17; i++) {
-        bgImages.push(`css/${i}.jpg`);
-    }
-    
-    let bgIndex = 0;
-    function changeBackground() {
-        if (bgImages.length > 0) {
-            document.body.style.backgroundImage = `url('${bgImages[bgIndex]}')`;
-            bgIndex = (bgIndex + 1) % bgImages.length;
-        }
-    }
-    changeBackground();
-    setInterval(changeBackground, 5000);
+        </div>
+    </div>
 
-    // 2. Script ya kubadili kurasa (Tabs & Views) kwa usahihi kabisa
-    function switchTab(tabName) {
-        const loginForm = document.getElementById('login-form');
-        const registerForm = document.getElementById('register-form');
-        
-        if (tabName === 'login') {
-            if (loginForm) loginForm.style.setProperty('display', 'block', 'important');
-            if (registerForm) registerForm.style.setProperty('display', 'none', 'important');
-        } else if (tabName === 'register') {
-            if (loginForm) loginForm.style.setProperty('display', 'none', 'important');
-            if (registerForm) registerForm.style.setProperty('display', 'block', 'important');
+    <!-- Javascript ya Kubadilisha Background na Kusimamia Vifungo -->
+    <script>
+        // 1. Script ya kubadili Background za picha 17
+        const bgImages = [];
+        for (let i = 1; i <= 17; i++) {
+            bgImages.push(`css/${i}.jpg`);
         }
-    }
+        
+        let bgIndex = 0;
+        function changeBackground() {
+            if (bgImages.length > 0) {
+                document.body.style.backgroundImage = `url('${bgImages[bgIndex]}')`;
+                bgIndex = (bgIndex + 1) % bgImages.length;
+            }
+        }
+        changeBackground();
+        setInterval(changeBackground, 5000);
 
-    function navigateTo(viewId) {
-        const views = document.querySelectorAll('.sub-view, .page-view');
-        views.forEach(v => v.style.setProperty('display', 'none', 'important'));
-        
-        const target = document.getElementById(viewId);
-        if (target) {
-            target.style.setProperty('display', 'block', 'important');
+        // 2. Script ya kubadili kurasa (Tabs & Views) kwa usahihi kabisa
+        function switchTab(tabName) {
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            
+            if (tabName === 'login') {
+                if (loginForm) loginForm.style.setProperty('display', 'block', 'important');
+                if (registerForm) registerForm.style.setProperty('display', 'none', 'important');
+            } else if (tabName === 'register') {
+                if (loginForm) loginForm.style.setProperty('display', 'none', 'important');
+                if (registerForm) registerForm.style.setProperty('display', 'block', 'important');
+            }
         }
-    }
-</script>
+
+        function navigateTo(viewId) {
+            const views = document.querySelectorAll('.sub-view, .page-view');
+            views.forEach(v => v.style.setProperty('display', 'none', 'important'));
+            
+            const target = document.getElementById(viewId);
+            if (target) {
+                target.style.setProperty('display', 'block', 'important');
+            }
+        }
+    </script>
+</body>
+                </html>
+
