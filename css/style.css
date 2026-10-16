@@ -13,15 +13,16 @@ body {
     max-width: 600px;
     margin: 0 auto;
 }
-
 .card {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(5px);
+    background: rgba(255, 255, 255, 0.75) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
     padding: 15px;
     margin-bottom: 15px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
+
 
 h1, h2, h3 {
     color: #222;
