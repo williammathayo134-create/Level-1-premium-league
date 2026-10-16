@@ -265,18 +265,12 @@
     </div>
 
     <!-- JavaScript ya Kubadilisha Background ya Picha Zote Kiotomatiki -->
-    <script>
-        const bgImages = [
-            'css/IMG_3b376298-5c26-49d5-b41b-4bcc8b1469af1-1.jpg',
-            'css/IMG_4e4e53fa-43d8-4b1d-bec8-602b23302b0-1.jpg',
-            'css/IMG_696cffc4-bfec-455b-836c-536547306f5d-1.jpg',
-            'css/IMG_732de6c6-9be2-4adc-92b2-f735fd0d4d6e-1.jpg',
-            'css/IMG_a243f86f-7421-4e59-88dc-7f8f0f93-1.jpg',
-            'css/IMG_a929a8a4-cc63-40a6-92c9-84ff4cb9dbad-1.jpg',
-            'css/IMG_b561d11a-f379-415b-8962-4ab0856a531f-1.jpg',
-            'css/IMG_b683064d-1145-493a-9962-f19105b52b6c.jpg',
-            'css/IMG_c02a57d3-4b54-4340-8532-b2a2daeeef11-1.jpg'
-        ];
+        <script>
+        // Hii inatengeneza orodha ya picha kutoka 1.jpg hadi 17.jpg zilizopo ndani ya folda ya css
+        const bgImages = [];
+        for (let i = 1; i <= 17; i++) {
+            bgImages.push(`css/${i}.jpg`);
+        }
 
         let bgIndex = 0;
         function changeBackground() {
@@ -286,12 +280,8 @@
             }
         }
 
+        // Anza kubadilisha picha mara moja na kila baada ya sekunde 5
         changeBackground();
         setInterval(changeBackground, 5000);
-    </script>
-    
-
-    <script src="js/script.js"></script>
-</body>
-    </html>
+        </script>
                     
