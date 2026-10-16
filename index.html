@@ -263,10 +263,7 @@
                 </div>
             </div>
 
-        </div>
-    </div>
-
- <!-- Javascript ya Kubadilisha Background na Kusimamia Vifungo -->
+        </div><!-- Javascript ya Kubadilisha Background na Kusimamia Vifungo -->
 <script>
     // 1. Script ya kubadili Background za picha 17
     const bgImages = [];
@@ -283,6 +280,29 @@
     }
     changeBackground();
     setInterval(changeBackground, 5000);
+
+    // 2. Script ya kubadili kurasa (Tabs & Views)
+    function switchTab(tabName) {
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        if (loginForm) loginForm.style.display = (tabName === 'login') ? 'block' : 'none';
+        if (registerForm) registerForm.style.display = (tabName === 'register') ? 'block' : 'none';
+    }
+
+    function navigateTo(viewId) {
+        const views = document.querySelectorAll('.sub-view, .page-view');
+        views.forEach(v => v.style.display = 'none');
+        
+        const target = document.getElementById(viewId);
+        if (target) {
+            target.style.display = 'block';
+        }
+    }
+</script>
+        
+    </div>
+
+
 
     // 2. Script ya kubadili kurasa (Tabs & Views)
     function switchTab(tabName) {
