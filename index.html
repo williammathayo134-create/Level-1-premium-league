@@ -274,8 +274,7 @@
 
         </div>
     </div>
-
-   <script>
+<script>
     // 1. Script ya kubadili Background za picha 17
     const bgImages = [];
     for (let i = 1; i <= 17; i++) {
@@ -291,19 +290,20 @@
     }
     changeBackground();
     setInterval(changeBackground, 5000);
+
+    // 2. Script ya kubadili kurasa (Tabs & Views)
     function switchTab(tabName) {
         const loginForm = document.getElementById('login-form');
         const registerForm = document.getElementById('register-form');
         
-        if (tabName == 'login') {
-            if (loginForm) loginForm.style.setProperty('display', 'block', 'important');
-            if (registerForm) registerForm.style.setProperty('display', 'none', 'important');
+        if (tabName === 'login') {
+            if (loginForm) loginForm.style.display = 'block';
+            if (registerForm) registerForm.style.display = 'none';
         } else if (tabName === 'register') {
-            if (loginForm) loginForm.style.setProperty('display', 'none', 'important');
-            if (registerForm) registerForm.style.setProperty('display', 'block', 'important');
+            if (loginForm) loginForm.style.display = 'none';
+            if (registerForm) registerForm.style.display = 'block';
         }
     }
-       
 
     function navigateTo(viewId) {
         const views = document.querySelectorAll('.sub-view, .page-view');
@@ -314,5 +314,56 @@
             target.style.display = 'block';
         }
     }
-   </script>
-   
+
+    // 3. Vitendakazi vya Vifungo vya Kuingia na Kusajili
+    function handleLogin() {
+        const loginId = document.getElementById('login-id').value.trim();
+        if (!loginId) {
+            alert('Tafadhali weka ID yako au Password ya Admin!');
+            return;
+        }
+        
+        // Kama ni Admin au Mchezaji, peleka kwenye Dashbodi
+        const authSection = document.getElementById('auth-section');
+        const dashboardSection = document.getElementById('dashboard-section');
+        
+        if (authSection) authSection.style.display = 'none';
+        if (dashboardSection) dashboardSection.style.display = 'block';
+        
+        // Weka jina au ID kwenye ukurasa
+        const welcomeName = document.getElementById('user-welcome-name');
+        if (welcomeName) welcomeName.innerText = loginId;
+        
+        // Angalia kama ni Admin
+        const adminBtn = document.getElementById('admin-menu-btn');
+        if (loginId.toLowerCase() === 'admin' || loginId === '1234') {
+            if (adminBtn) adminBtn.style.display = 'block';
+        } else {
+            if (adminBtn) adminBtn.style.display = 'none';
+        }
+    }
+
+    function handleRegister() {
+        const regName = document.getElementById('reg-name').value.trim();
+        const regContact = document.getElementById('reg-contact').value.trim();
+        
+        if (!regName || !regContact) {
+            alert('Tafadhali jaza jina lako na namba ya simu au email!');
+            return;
+        }
+        
+        // Hamia kwenye ukurasa wa pili wa kusajili Timu
+        const authSection = document.getElementById('auth-section');
+        const teamSetupSection = document.getElementById('team-setup-section');
+        
+        if (authSection) authSection.style.display = 'none';
+        if (teamSetupSection) teamSetupSection.style.display = 'block';
+        
+        // Tengeneza ID ya mfano
+        const assignedId = 'DLS-' + Math.floor(1000 + Math.random() * 9000);
+        const idDisplay = document.getElementById('assigned-id-display');
+        if (idDisplay) idDisplay.innerText = assignedId;
+    }
+            </script>
+    
+
