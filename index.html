@@ -5,70 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Level 1 Premium League (DLS)</title>
     <style>
-        /* Background ya Full Screen inayobadilika kupitia JavaScript */
         body {
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #fff;
-            position: relative;
-            min-height: 100vh;
-            overflow-x: hidden;
             background-color: #0b192c;
             background-size: cover;
             background-position: center center;
             background-repeat: no-repeat;
-            transition: background-image 1s ease-in-out;
-            filter: saturate(1.3) brightness(1.05);
+            min-height: 100vh;
         }
-
-        /* Tabaka la giza kidogo ili maandishi yasomeke vizuri juu ya picha */
         body::before {
             content: "";
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
-            background: rgba(11, 25, 44, 0.75);
+            background: rgba(11, 25, 44, 0.85);
         }
-
         .container {
             max-width: 600px;
             margin: 0 auto;
             padding: 10px;
-            position: relative;
-            z-index: 1;
         }
         .card {
-            background: rgba(255, 255, 255, 0.25) !important;
+            background: rgba(255, 255, 255, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.4);
             padding: 15px;
             margin-bottom: 15px;
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            position: relative;
-            z-index: 10;
         }
-
-        .card button, .card input, .card select {
-            position: relative;
-            z-index: 20;
-            pointer-events: auto !important;
-        }
-        
         h1, h2, h3, h4 {
-            color: #222;
+            color: #fff;
             text-align: center;
         }
-        input, textarea, select {
+        input, select {
             width: 100%;
             padding: 10px;
             margin: 8px 0;
             box-sizing: border-box;
             border: 1px solid #ccc;
             border-radius: 4px;
+            color: #000;
         }
         button {
             background: #007bff;
@@ -116,37 +95,44 @@
             text-align: center;
             font-size: 13px;
             color: #333;
+            background: #fff;
         }
         th {
             background-color: #194340;
             color: white;
         }
+        /* News Ticker Styling */
+        .news-ticker-container {
+            background-color: #0b132b;
+            color: #ffcc00;
+            padding: 8px 0;
+            overflow: hidden;
+            white-space: nowrap;
+            border-top: 2px solid #ffcc00;
+            border-bottom: 2px solid #ffcc00;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .ticker-title {
+            background-color: #ffcc00;
+            color: #0b132b;
+            padding: 4px 8px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .ticker-text {
+            display: inline-block;
+            animation: ticker 25s linear infinite;
+        }
+        @keyframes ticker {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
     </style>
 </head>
 <body>
-<!-- SPLASH SCREEN ILIYOKAMILIKA -->
-<div id="splash-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #0b132b; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99999; transition: opacity 0.8s ease;">
-    <h1 style="color: #ffcc00; font-size: 24px; font-weight: bold; text-align: center; margin-bottom: 5px;">LEVEL 1 PREMIUM LEAGUE</h1>
-    <p style="color: #ffffff; font-size: 12px; letter-spacing: 2px;">DREAM LEAGUE SOCCER (DLS)</p>
-    <div style="margin-top: 20px; width: 35px; height: 35px; border: 4px solid #ffcc00; border-top: 4px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-</div>
-
-<style>
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-.fade-out { opacity: 0; pointer-events: none; }
-</style>
-
-<script>
-    setTimeout(function() {
-        const splash = document.getElementById('splash-screen');
-        if (splash) {
-            splash.classList.add('fade-out');
-            setTimeout(function() {
-                splash.style.display = 'none';
-            }, 800);
-        }
-    }, 3000);
-</script>
     
     <div class="container">
         <h1 style="color: #ffc107; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">Level 1 Premium League (DLS)</h1>
@@ -170,7 +156,7 @@
                 <!-- Fomu ya Usajili wa Mgeni -->
                 <div id="register-form" class="form-box" style="display:none;">
                     <h3>Jisajili Upate ID Yako</h3>
-                    <p id="reg-status-msg" style="color: green; font-size: 14px;"></p>
+                    <p id="reg-status-msg" style="color: #2ecc71; font-size: 14px;"></p>
                     <input type="text" id="reg-name" placeholder="Jina lako kamili">
                     <input type="text" id="reg-contact" placeholder="Namba ya Simu au Email">
                     <button id="btn-submit-reg" onclick="handleRegister()">Jisajili</button>
@@ -182,7 +168,7 @@
         <div id="team-setup-section" class="page-view" style="display:none;">
             <div class="card">
                 <h2>Sajili Timu Yako</h2>
-                <p>ID Yako ni: <strong id="assigned-id-display" style="color: blue;"></strong> (Iweke kumbukumbu!)</p>
+                <p>ID Yako ni: <strong id="assigned-id-display" style="color: #ffcc00;"></strong> (Iweke kumbukumbu!)</p>
                 <input type="text" id="team-name-input" placeholder="Jina la Timu yako kwenye Ligi">
                 <input type="text" id="team-logo-input" placeholder="Link ya Logo ya Timu (Image URL)">
                 <button onclick="saveTeamDetails()">Hifadhi Timu na Endelea</button>
@@ -193,11 +179,11 @@
         <div id="dashboard-section" class="page-view" style="display:none;">
             <div class="card">
                 <h2>Karibu, <span id="user-welcome-name"></span></h2>
-                <p>Aina ya Akaunti: <span id="user-role-badge" style="font-weight: bold; color: darkblue;"></span></p>
+                <p>Aina ya Akaunti: <span id="user-role-badge" style="font-weight: bold; color: #ffcc00;"></span></p>
                 <button onclick="handleLogout()" style="background: #dc3545; color: white;">Toka nje (Logout)</button>
 
                 <!-- Menyu Kuu ya Kurasa Zinajitegemea -->
-                <div class="menu-nav" style="margin-top: 15px;">
+                <div class="menu-nav">
                     <button onclick="navigateTo('view-table')">Msimamo wa Ligi</button>
                     <button onclick="navigateTo('view-fixtures')">Ratiba za Mechi</button>
                     <button onclick="navigateTo('view-scorers')">Wafungaji & Assist</button>
@@ -240,20 +226,20 @@
             <div id="view-fixtures" class="sub-view" style="display:none;">
                 <div class="card">
                     <h3>Ratiba za Mechi (Zimepangwa Kiotomatiki)</h3>
-                    <div id="fixtures-container">
-                        <p>Hakuna ratiba zilizopangwa kwa sasa.</p>
+                    <div id="fixtures-container" style="color: #333;">
+                        <p style="color: #fff;">Hakuna ratiba zilizopangwa kwa sasa.</p>
                     </div>
                 </div>
             </div>
 
             <!-- C. UKURASA WA WAFUNGAJI & ASSIST BORA -->
             <div id="view-scorers" class="sub-view" style="display:none;">
-                <div class="card">
-                    <h3>Wafungaji Bora (Top Scorers)</h3>
-                    <ul id="top-scorers-list"><li>Inapakia...</li></ul>
+                <div class="card" style="color: #333;">
+                    <h3 style="color: #222;">Wafungaji Bora (Top Scorers)</h3>
+                    <ul id="top-scorers-list" style="background: #fff; padding: 10px; border-radius: 4px;"><li>Inapakia...</li></ul>
                     <hr>
-                    <h3>Assist Bora (Top Playmakers)</h3>
-                    <ul id="top-assists-list"><li>Inapakia...</li></ul>
+                    <h3 style="color: #222;">Assist Bora (Top Playmakers)</h3>
+                    <ul id="top-assists-list" style="background: #fff; padding: 10px; border-radius: 4px;"><li>Inapakia...</li></ul>
                 </div>
             </div>
 
@@ -278,7 +264,6 @@
                     <label>Weka Picha ya Uthibitisho (Screenshot):</label>
                     <input type="file" id="match-screenshot" accept="image/*">
                     <button onclick="submitMatchResult()">Tuma kwa Admin</button>
-                    <button onclick="adminToggleAndStartLeague()" style="background: #e74c3c; color: white; padding: 12px 20px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; display: block; margin-top: 15px; margin-bottom: 15px;">Funga Usajili na Anzisha Ligi</button>
                 </div>
             </div>
 
@@ -286,8 +271,6 @@
             <div id="view-admin" class="sub-view" style="display:none;">
                 <div class="card" style="border: 2px solid #ffc107;">
                     <h3>Usimamizi wa Admin</h3>
-                    <button onclick="adminResetLeague()" style="background: #dc3545; color: white; margin-bottom: 15px;">Refresh / Reset Msimamo (Futa Ligi na Fungua Usajili)</button>
-                    
                     <h4>Mechi Zinazosubiri Uthibitisho</h4>
                     <div id="admin-pending-container">
                         <p>Hakuna matokeo yanayosubiri.</p>
@@ -295,49 +278,18 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- NEWS TICKER (Ratiba na Taarifa Zinazotembea) -->
-    <div class="news-ticker-container">
-        <div class="ticker-title">RATIBA:</div>
-        <div class="ticker-text">
-            <span id="ticker-text-display">Inapakia taarifa za ligi...</span>
+        <!-- NEWS TICKER (Ratiba na Taarifa Zinazotembea) -->
+        <div class="news-ticker-container">
+            <div class="ticker-title">RATIBA:</div>
+            <div class="ticker-text">
+                <span id="ticker-text-display">Inapakia taarifa za ligi...</span>
+            </div>
         </div>
+
     </div>
 
-    <style>
-    .news-ticker-container {
-        background-color: #0b132b;
-        color: #ffcc00;
-        padding: 8px 0;
-        overflow: hidden;
-        white-space: nowrap;
-        border-top: 2px solid #ffcc00;
-        border-bottom: 2px solid #ffcc00;
-        font-size: 13px;
-        display: flex;
-        align-items: center;
-        margin-top: 20px;
-    }
-    .ticker-title {
-        background-color: #ffcc00;
-        color: #0b132b;
-        padding: 4px 8px;
-        font-weight: bold;
-        margin-right: 10px;
-        z-index: 2;
-    }
-    .ticker-text {
-        display: inline-block;
-        animation: ticker 25s linear infinite;
-    }
-    @keyframes ticker {
-        0% { transform: translateX(100%); }
-        100% { transform: translateX(-100%); }
-    }
-    </style>
-        
     <script src="js/script.js"></script>
 </body>
-    </html>
-    
+                                               </html>
+                                               
