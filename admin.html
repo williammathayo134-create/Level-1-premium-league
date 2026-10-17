@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 1 Premium League - Admin Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0b132b;
+            color: #fff;
+            min-height: 100vh;
+        }
+        header {
+            background: #1c2541;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #ffcc00;
+        }
+        h1 { color: #ffcc00; margin: 0; font-size: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        .container { padding: 25px; max-width: 900px; margin: 0 auto; }
+        .card {
+            background: rgba(28, 37, 65, 0.95);
+            border: 1px solid rgba(255, 204, 0, 0.3);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+        }
+        h2 { color: #4cc9f0; font-size: 18px; margin-top: 0; border-bottom: 1px solid rgba(76,201,240,0.3); padding-bottom: 8px; }
+        textarea, input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: #0b132b;
+            border: 1px solid #4cc9f0;
+            color: #fff;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        button {
+            background: #ffcc00;
+            color: #0b132b;
+            border: none;
+            padding: 12px 20px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        button:hover { background: #e5b800; }
+        .btn-danger { background: #f72585; color: #fff; }
+        .btn-danger:hover { background: #b5179e; }
+        .btn-success { background: #4bb543; color: #fff; }
+        .btn-success:hover { background: #3d9435; }
+        .pending-item {
+            background: #111a38;
+            border: 1px solid #334155;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .pending-info { font-size: 13px; }
+        .action-btns { display: flex; gap: 10px; width: auto; }
+        .action-btns button { margin-top: 0; padding: 6px 12px; font-size: 12px; width: auto; }
+        #admin-auth-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #0b132b; z-index: 99999; display: flex;
+            justify-content: center; align-items: center;
+        }
+        .auth-box {
+            background: #1c2541; padding: 30px; border-radius: 10px;
+            border: 2px solid #ffcc00; width: 320px; text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SCREEN YA KUZUIA MTU ASIYE ADMIN -->
+    <div id="admin-auth-screen">
+        <div class="auth-box">
+            <h2 style="color: #ffcc00;">INGIA KAMA ADMIN</h2>
+            <p style="font-size: 13px; color: #cbd5e1;">Weka nenosiri la siri kuendelea:</p>
+            <input type="password" id="admin-pass-input" placeholder="Weka Password ya Admin">
+            <button onclick="verifyAdminPassword()">Ingia Kwenye Dashboard</button>
+            <button onclick="window.location.href='index.html'" style="background: transparent; color: #94a3b8; border: 1px solid #475569; margin-top: 5px;">Rudi Nyumbani</button>
+        </div>
+    </div>
+
+    <header>
+        <h1>L1PL ADMIN STUDIO</h1>
+        <button onclick="window.location.href='index.html'" style="width: auto; margin:0; padding: 6px 14px; font-size: 12px; background: #334155; color: #fff;">Rudi Kwenye Tovuti</button>
+    </header>
+
+    <div class="container">
+        <!-- 1. NEWS TICKER CONTROLLER -->
+        <div class="card">
+            <h2>1. Udhibiti wa News Ticker (L-Bar)</h2>
+            <p style="font-size: 13px; color: #94a3b8;">Andika taarifa mpya itakayotembea chini ya skrini ya wachezaji:</p>
+            <textarea id="admin-ticker-text" rows="3" placeholder="Andika ujumbe hapa..."></textarea>
+            <button onclick="saveTickerToCloud()">Chapisha Kwenye Ticker</button>
+        </div>
+
+        <!-- 2. PENDING MATCHES QUEUE -->
+        <div class="card">
+            <h2>2. Uthibitisho wa Matokeo (Pending Queue)</h2>
+            <div id="admin-pending-container">
+                <p style="color: #94a3b8;">Inapakia matokeo yanayosubiri uthibitisho...</p>
+            </div>
+        </div>
+
+        <!-- 3. LEAGUE CONTROLS & AUTOMATION -->
+        <div class="card">
+            <h2>3. Usimamizi Mkuu wa Ligi</h2>
+            <p style="font-size: 13px; color: #94a3b8;">Dhibiti ratiba, usajili, na mfumo mzima wa ligi:</p>
+            <button class="btn-success" onclick="adminStartLeague()">Anzisha Ligi & Panga Ratiba Kiotomatiki</button>
+            <button class="btn-danger" onclick="adminResetLeague()">Futa Msimu & Anzisha Upya (Reset)</button>
+        </div>
+    </div>
+
+    <script>
+        // --- VIUNGANISHI VYA JSONBIN NA ADMIN (VIKAO VYAKO VYA HALISI) ---
+        const JSONBIN_BIN_ID = "6ac561e7ac6210605a1a73c9";
+        const JSONBIN_API_KEY = "$2a$10$s6iBC3g.njqiqMtn5KXbqeJpY8CKQwxRuo3DNHYA43KfLd3LbJjC6";
+        const ADMIN_PASSWORD = "Richard";
+
+        function verifyAdminPassword() {
+            const pass = document.getElementById('admin-pass-input').value.trim();
+            if(pass === ADMIN_PASSWORD) {
+                document.getElementById('admin-auth-screen').style.display = 'none';
+                loadAdminData();
+            } else {
+                alert("Nenosiri si sahihi! Jaribu tena.");
+            }
+        }
+
+        async function fetchBinData() {
+            try {
+                let res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+                    headers: { 'X-Master-Key': JSONBIN_API_KEY }
+                });
+                let data = await res.json();
+                return data.record;
+            } catch(e) {
+                console.error(e);
+                return null;
+            }
+        }
+
+        async function loadAdminData() {
+            let db = await fetchBinData();
+            if(!db) {
+                document.getElementById('admin-pending-container').innerHTML = '<p style="color: #f72585;">Imeshindikana kuunganishwa na wingu la JSONBin.</p>';
+                return;
+            }
+            if(db.ticker) {
+                document.getElementById('admin-ticker-text').value = db.ticker;
+            }
+            renderPendingQueue(db.pending_matches || []);
+        }
+
+        async function saveTickerToCloud() {
+            let tickerText = document.getElementById('admin-ticker-text').value;
+            let db = await fetchBinData();
+            if(!db) db = {};
+            db.ticker = tickerText;
+
+            let res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': JSONBIN_API_KEY
+                },
+                body: JSON.stringify(db)
+            });
+
+            if(res.ok) {
+                alert('News Ticker imesasishwa na kurushwa hewani!');
+            } else {
+                alert('Imeshindikana kusasisha Ticker.');
+            }
+        }
+
+        function renderPendingQueue(pendingList) {
+            let container = document.getElementById('admin-pending-container');
+            if(!pendingList || pendingList.length === 0) {
+                container.innerHTML = '<p style="color: #94a3b8;">Hakuna matokeo yanayosubiri uthibitisho kwa sasa.</p>';
+                return;
+            }
+            let html = '';
+            pendingList.forEach((match, index) => {
+                html += `<div class="pending-item">
+                    <div class="pending-info">
+                        <strong>${match.reporter || 'Mchezaji'}</strong> vs <strong>${match.opponent || 'Mpinzani'}</strong><br>
+                        <span style="color: #ffcc00; font-size: 14px;">Matokeo: ${match.score || '0-0'}</span><br>
+                        <small style="color: #94a3b8;">Mfungaji: ${match.scorer || '-'} | Assist: ${match.assist || '-'}</small>
+                    </div>
+                    <div class="action-btns">
+                        <button class="btn-success" onclick="approveMatch(${index})">Kubali</button>
+                        <button class="btn-danger" onclick="rejectMatch(${index})">Kataa</button>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        async function approveMatch(index) {
+            let db = await fetchBinData();
+            if(!db || !db.pending_matches) return;
+            let match = db.pending_matches.splice(index, 1)[0];
+            
+            if(!db.match_history) db.match_history = [];
+            db.match_history.push({
+                home: match.reporter,
+                away: match.opponent,
+                score: match.score,
+                scorer: match.scorer,
+                assist: match.assist,
+                status: "Approved"
+            });
+
+            let res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_API_KEY },
+                body: JSON.stringify(db)
+            });
+
+            if(res.ok) {
+                alert('Matokeo yamethibitishwa na kuingizwa kwenye msimamo!');
+                loadAdminData();
+            } else {
+                alert('Imeshindikana kuhifadhi matokeo.');
+            }
+        }
+
+        async function rejectMatch(index) {
+            let db = await fetchBinData();
+            if(!db || !db.pending_matches) return;
+            let match = db.pending_matches.splice(index, 1)[0];
+            
+            if(!db.fixtures) db.fixtures = [];
+            db.fixtures.push({
+                home: match.reporter,
+                away: match.opponent,
+                status: "Rescheduled"
+            });
+
+            let res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_API_KEY },
+                body: JSON.stringify(db)
+            });
+
+            if(res.ok) {
+                alert('Mechi imekataliwa na kurudishwa kwenye ratiba!');
+                loadAdminData();
+            } else {
+                alert('Imeshindikana kukataa mechi.');
+            }
+        }
+
+        async function adminResetLeague() {
+            if(!confirm("ONYO: Je, una hakika unataka kufuta msimu mzima? Kitendo hiki hakitekelezeki!")) return;
+            
+            let emptyDb = { users: [], pending_matches: [], match_history: [], fixtures: [], ticker: "Karibu kwenye Level 1 Premium League!" };
+            let res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_API_KEY },
+                body: JSON.stringify(emptyDb)
+            });
+
+            if(res.ok) {
+                alert('Ligi imefutwa kikamilifu na msimu mpya uko wazi!');
+                location.reload();
+            } else {
+                alert('Imeshindikana kufanya reset.');
+            }
+        }
+    </script>
+</body>
+      </html>
+      
