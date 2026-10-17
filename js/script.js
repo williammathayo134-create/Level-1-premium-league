@@ -7,7 +7,23 @@ const ADMIN_PASSWORD = "Richard";
 window.onload = function() {
     checkRegistrationWindow();
     loadDashboardState();
+    fetchNewsTicker(); // Vuta Ticker mara tu ukurasa unapofunguka
 };
+
+// --- KUVUTA NEWS TICKER KUTOKA WINGU ---
+async function fetchNewsTicker() {
+    try {
+        let db = await fetchDataFromBin();
+        if (db && db.ticker) {
+            let tickerSpan = document.getElementById('ticker-text-display');
+            if (tickerSpan) {
+                tickerSpan.innerText = db.ticker;
+            }
+        }
+    } catch (err) {
+        console.error("Hitilafu ya Ticker:", err);
+    }
+}
 
 // --- 1. KUBADILISHA TAB ZA AUTH (LOGIN / REGISTER) ---
 function switchTab(type) {
@@ -41,10 +57,10 @@ async function fetchDataFromBin() {
             headers: { 'X-Master-Key': JSONBIN_API_KEY }
         });
         let result = await response.json();
-        return result.record || { users: [], pending_matches: [], match_history: [], fixtures: [] };
+        return result.record || { users: [], pending_matches: [], match_history: [], fixtures: [], ticker: "Karibu kwenye Level 1 Premium League!" };
     } catch (err) {
         console.error("Hitilafu ya kusoma data:", err);
-        return { users: [], pending_matches: [], match_history: [], fixtures: [] };
+        return { users: [], pending_matches: [], match_history: [], fixtures: [], ticker: "Karibu kwenye Level 1 Premium League!" };
     }
 }
 
@@ -64,11 +80,9 @@ async function handleRegister() {
         let db = await fetchDataFromBin();
         if (!db.users) db.users = [];
 
-        // Hifadhi mcheza kwa muda kwenye localStorage ili akajaze timu yake
         let tempUser = { id: newId, full_name: name, contact: contact, role: 'player', team_name: '', team_logo: '' };
         localStorage.setItem('l1p_temp_user', JSON.stringify(tempUser));
 
-        // Onyesha ukurasa wa pili wa kusajili timu na logo
         document.getElementById('auth-section').style.display = 'none';
         document.getElementById('team-setup-section').style.display = 'block';
         document.getElementById('assigned-id-display').innerText = newId;
@@ -134,7 +148,6 @@ async function handleLogin() {
         return;
     }
 
-    // Angalia kama ni Admin (Richard)
     if (inputId === ADMIN_PASSWORD) {
         let adminUser = { id: ADMIN_PASSWORD, full_name: 'Richard (Admin)', role: 'admin' };
         localStorage.setItem('l1p_current_user', JSON.stringify(adminUser));
@@ -237,14 +250,8 @@ async function fetchLeagueTable() {
             stats[name] = {
                 name: name,
                 logo: user.team_logo || '',
-                played: 0,
-                won: 0,
-                drawn: 0,
-                lost: 0,
-                gf: 0,
-                ga: 0,
-                gd: 0,
-                points: 0
+                played: 0, won: 0, drawn: 0, lost: 0,
+                gf: 0, ga: 0, gd: 0, points: 0
             };
         });
         
@@ -259,15 +266,9 @@ async function fetchLeagueTable() {
                 stats[home].played++;
                 stats[home].gf += homeScore;
                 stats[home].ga += awayScore;
-                if (homeScore > awayScore) {
-                    stats[home].won++;
-                    stats[home].points += 3;
-                } else if (homeScore === awayScore) {
-                    stats[home].drawn++;
-                    stats[home].points += 1;
-                } else {
-                    stats[home].lost++;
-                }
+                if (homeScore > awayScore) { stats[home].won++; stats[home].points += 3; }
+                else if (homeScore === awayScore) { stats[home].drawn++; stats[home].points += 1; }
+                else { stats[home].lost++; }
                 stats[home].gd = stats[home].gf - stats[home].ga;
             }
             
@@ -275,15 +276,9 @@ async function fetchLeagueTable() {
                 stats[away].played++;
                 stats[away].gf += awayScore;
                 stats[away].ga += homeScore;
-                if (awayScore > homeScore) {
-                    stats[away].won++;
-                    stats[away].points += 3;
-                } else if (awayScore === homeScore) {
-                    stats[away].drawn++;
-                    stats[away].points += 1;
-                } else {
-                    stats[away].lost++;
-                }
+                if (awayScore > homeScore) { stats[away].won++; stats[away].points += 3; }
+                else if (awayScore === homeScore) { stats[away].drawn++; stats[away].points += 1; }
+                else { stats[away].lost++; }
                 stats[away].gd = stats[away].gf - stats[away].ga;
             }
         });
@@ -316,7 +311,8 @@ async function fetchLeagueTable() {
         console.error(err);
         tbody.innerHTML = '<tr><td colspan="11">Imeshindikana kupakia msimamo.</td></tr>';
     }
-                        }
+}
+
 async function fetchFixtures() {
     let container = document.getElementById('fixtures-container');
     if (!container) return;
@@ -334,8 +330,8 @@ async function fetchFixtures() {
 
         let html = "<ul style='list-style: none; padding: 0;'>";
         fixtures.forEach((match, index) => {
-            let matchDate = match.date ? `<br><small style='color: #3498db;'>Tarehe: ${match.date} (Saa 10:00 Jioni - 2:30 Usiku)</small>` : '';
-            html += `<li style='background: #222; margin-bottom: 10px; padding: 10px; border-radius: 5px;'>
+            let matchDate = match.date ? `<br><small style='color: #3498db;'>Tarehe: ${match.date}</small>` : '';
+            html += `<li style='background: #222; margin-bottom: 10px; padding: 10px; border-radius: 5px; color: white;'>
                 <strong>Mechi ya ${index + 1}:</strong> ${match.home} vs ${match.away} 
                 ${matchDate}
                 <span style='float: right; color: #f1c40f;'>-:-</span>
@@ -347,8 +343,7 @@ async function fetchFixtures() {
     } catch (err) {
         console.error(err);
         container.innerHTML = "<p>Imeshindikana kupakia ratiba.</p>";
-  
-}
+    }
 }
 
 async function fetchTopScorersAndAssists() {
@@ -361,12 +356,6 @@ async function fetchTopScorersAndAssists() {
     try {
         let db = await fetchDataFromBin();
         let history = db.match_history || [];
-        
-        if (history.length === 0) {
-            if (scorersContainer) scorersContainer.innerHTML = '<li>Bado hakuna takwimu.</li>';
-            if (assistsContainer) assistsContainer.innerHTML = '<li>Bado hakuna takwimu.</li>';
-            return;
-        }
         
         let scorersCount = {};
         let assistsCount = {};
@@ -414,10 +403,29 @@ async function fetchTopScorersAndAssists() {
     }
 }
 
-
 async function fetchMatchHistory() {
     let container = document.getElementById('match-history-container');
-    if (container) container.innerHTML = '<p>Hakuna mechi zilizochezwa bado.</p>';
+    if (!container) return;
+    
+    container.innerHTML = '<p>Inapakia historia ya mechi...</p>';
+    try {
+        let db = await fetchDataFromBin();
+        let history = db.match_history || [];
+        if (history.length === 0) {
+            container.innerHTML = '<p>Hakuna mechi zilizochezwa bado.</p>';
+            return;
+        }
+        let html = "<ul style='list-style: none; padding: 0;'>";
+        history.forEach(m => {
+            html += `<li style='background: #222; margin-bottom: 8px; padding: 10px; border-radius: 5px; color: white;'>
+                ${m.home} <strong>${m.score}</strong> ${m.away} <span style='color: #2ecc71; float: right;'>Imeshapigwa</span>
+            </li>`;
+        });
+        html += "</ul>";
+        container.innerHTML = html;
+    } catch (err) {
+        container.innerHTML = '<p>Imeshindikana kupakia historia.</p>';
+    }
 }
 
 // --- 10. KUWASILISHA MATOKEO (Wachezaji) ---
@@ -443,7 +451,6 @@ async function submitMatchResult() {
         let db = await fetchDataFromBin();
         if (!db.pending_matches) db.pending_matches = [];
 
-        // Hifadhi matokeo kwenye foleni ya kusubiri uthibitisho wako
         db.pending_matches.push({
             reporter: currentUser.team_name || currentUser.full_name,
             opponent: opponent,
@@ -476,7 +483,6 @@ async function submitMatchResult() {
         alert('Hitilafu ya mtandao imetokea.');
     }
 }
-
 
 // --- 11. ADMIN: KUKAGUA NA KUREFRESH LIGI ---
 async function fetchPendingQueue() {
@@ -511,6 +517,7 @@ async function fetchPendingQueue() {
         container.innerHTML = "<p>Imeshindikana kupakia matokeo.</p>";
     }
 }
+
 async function approveMatch(index) {
     try {
         let db = await fetchDataFromBin();
@@ -530,237 +537,4 @@ async function approveMatch(index) {
 
         db.pending_matches.splice(index, 1);
 
-        let response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Master-Key': JSONBIN_API_KEY
-            },
-            body: JSON.stringify(db)
-        });
-
-        if (response.ok) {
-            alert('Matokeo yamethibitishwa rasmi!');
-            fetchPendingQueue();
-        } else {
-            alert('Imeshindikana kusasisha mfumo.');
-        }
-    } catch (err) {
-        console.error(err);
-        alert('Hitilafu imetokea.');
-    }
-}
-async function rejectMatch(index) {
-    try {
-        let db = await fetchDataFromBin();
-        if (!db.pending_matches || !db.pending_matches[index]) return;
-
-        let rejectedMatch = db.pending_matches[index];
-
-        // 1. Futa kwenye foleni ya kusubiri ya Admin
-        db.pending_matches.splice(index, 1);
-
-        // 2. Irudishe kwenye ratiba (Reschedule) ili wacheze tena
-        if (!db.fixtures) db.fixtures = [];
-        db.fixtures.push({
-            home: rejectedMatch.reporter,
-            away: rejectedMatch.opponent,
-            home_score: "",
-            away_score: "",
-            status: "Rescheduled"
-        });
-
-        let response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Master-Key': JSONBIN_API_KEY
-            },
-            body: JSON.stringify(db)
-        });
-
-        if (response.ok) {
-            alert('Mechi imekataliwa na kurudishwa kwenye ratiba ili wacheze tena!');
-            fetchPendingQueue();
-        } else {
-            alert('Imeshindikana kusasisha mfumo.');
-        }
-    } catch (err) {
-        console.error(err);
-        alert('Hitilafu imetokea.');
-  
-    }
-}
-
-// ADMIN: KUREFRESH / RESET LIGI (Inafuta ligi na kufungua usajili)
-async function adminResetLeague() {
-    let confirmReset = confirm("WARNING: Je, una hakika unataka ku-reset ligi? Hii itafuta data zote za sasa na kufungua dirisha la usajili upya!");
-    if (!confirmReset) return;
-
-    try {
-        let emptyDb = { users: [], pending_matches: [], match_history: [], fixtures: [] };
-        let response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Master-Key': JSONBIN_API_KEY
-            },
-            body: JSON.stringify(emptyDb)
-        });
-
-        if (response.ok) {
-            alert('Ligi imefutwa kikamilifu! Dirisha la usajili liko wazi.');
-            localStorage.removeItem('l1p_current_user');
-            location.reload();
-        } else {
-            alert('Imeshindikana kufanya reset kwenye wingu.');
-        }
-    } catch (err) {
-        alert('Hitilafu: ' + err.message);
-    }
-}async function adminToggleAndStartLeague() {
-    let password = prompt("Ingiza nenosiri la Admin (Richard):");
-    if (password !== ADMIN_PASSWORD) {
-        alert("Nenosiri si sahihi!");
-        return;
-    }
-
-    try {
-        let res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
-            headers: { 'X-Master-Key': JSONBIN_API_KEY }
-        });
-        let data = await res.json();
-        let users = data.record.users || data.record;
-
-        if (!Array.isArray(users)) {
-            alert("Hitilafu kwenye muundo wa data za wachezaji.");
-            return;
-        }
-
-        // Kichujio cha kuondoa wote waliojisajili mara mbili (Duplicate cleaner)
-        let uniqueUsers = [];
-        let seenContacts = new Set();
-        let seenNames = new Set();
-
-        users.forEach(player => {
-            let name = player.full_name ? player.full_name.trim().toLowerCase() : "";
-            let contact = player.contact ? player.contact.trim() : "";
-            
-            if (name && contact && !seenContacts.has(contact) && !seenNames.has(name)) {
-                seenContacts.add(contact);
-                seenNames.add(name);
-                uniqueUsers.push(player);
-            }
-        });
-
-                // 1. Kusanya majina ya timu zote zilizokwishacheza kwenye match_history
-    let playedTeams = new Set();
-    if (db.match_history) {
-        db.match_history.forEach(m => {
-            playedTeams.add(m.home);
-            playedTeams.add(m.away);
-        });
-    }
-
-    // 2. Chuja tubakize tu zile ambazo BADO hazijacheza
-    let remainingTeams = uniqueUsers.filter(user => {
-        let teamName = user.team_name || user.full_name;
-        return !playedTeams.has(teamName);
-    });
-
-    let fixtures = [];
-    let teams = [...remainingTeams
-                ];
-        
-        if (teams.length % 2 !== 0) {
-            teams.push({ full_name: "Mapumziko (Bye)", team_name: "Mapumziko (Bye)" });
-        }
-
-        let totalRounds = teams.length - 1;
-        let halfSize = teams.length / 2;
-
-        for (let round = 0; round < totalRounds; round++) {
-            for (let i = 0; i < halfSize; i++) {
-                let team1 = teams[i];
-                let team2 = teams[teams.length - 1 - i];
-
-                if (team1.team_name !== "Mapumziko (Bye)" && team2.team_name !== "Mapumziko (Bye)" &&
-                    team1.full_name !== "Mapumziko (Bye)" && team2.full_name !== "Mapumziko (Bye)") {
-                    
-               fixtures.push({
-                home: team1.team_name || team1.full_name,
-                away: team2.team_name || team2.full_name,
-                home_score: "",
-                away_score: "",
-                status: "Pending",
-                date: "14/10/2026"
-            });
-                    
-                }
-            }
-            teams.splice(1, 0, teams.pop());
-        }
-        
-   
-
-        // Hifadhi hali ya kufungwa, orodha safi, na ratiba kwenye JSONBin
-        let updateRes = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Master-Key': JSONBIN_API_KEY
-            },
-            body: JSON.stringify({ users: uniqueUsers, fixtures: fixtures, registration_closed: true })
-        });
-
-
-        if (updateRes.ok) {
-            localStorage.setItem('registration_closed', 'true');
-            alert(`Usajili umefungwa rasmi! Waliojirudia wamefutwa. Wachezaji halali kwenye ligi ni: ${uniqueUsers.length}. Ligi imeanza!`);
-            location.reload();
-        } else {
-            alert("Imeshindikana kusasisha hifadhi ya data.");
-        }
-    } catch (err) {
-        console.error(err);
-        alert("Hitilafu ya mtandao imetokea.");
-    }
-}
-// --- MFUMO WA KUBADILISHA PICHA ZA NYUMA (BACKGROUND WALLPAPERS) ---
-const pichaZangu = [
-    '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', 
-    '8.jpg', '9.jpg', '10.jpg', '11.jpg', '12.jpg', 
-    '13.jpg', '14.jpg', '15.jpg'
-];
-
-let nambaYaPicha = 0;
-
-function badiliPichaNyuma() {
-    nambaYaPicha = (nambaYaPicha + 1) % pichaZangu.length;
-    document.body.style.backgroundImage = `linear-gradient(rgba(11, 19, 43, 0.8), rgba(11, 19, 43, 0.8)), url('${pichaZangu[nambaYaPicha]}')`;
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    document.body.style.backgroundImage = 'linear-gradient(rgba(11, 19, 43, 0.8), rgba(11, 19, 43, 0.8)), url("images/' + pichazangu[0] + '")';
-    document.body.style.backgroundSize = "cover";
-    document.body.style.backgroundPosition = "center center";
-    document.body.style.backgroundRepeat = "no-repeat";
-
-    // Inabadilisha picha kila baada ya sekunde 6
-    setInterval(badiliPichaNyuma, 6000);
-
-    // --- KUVUTA NEWS TICKER KUTOKA JSONBIN ---
-    fetch('https://api.jsonbin.io/v3/b/6ac561e7ac6210605a1a73c9/latest', {
-        headers: { 'X-Master-Key': '$2a$10$s6iBC3g.njqiqMtn5KXbqeJpY8CKQwxRuo3DNHYA43KfLd3LbJjC6' }
-    })
-    .then(res => res.json())
-    .then(data => {
-        if(data.record && data.record.ticker) {
-            const tickerSpan = document.getElementById('ticker-text-display');
-            if(tickerSpan) {
-                tickerSpan.innerText = data.record.ticker;
-            }
-        }
-    })
-    .catch(err => console.error("Hitilafu ya Ticker:", err));
-});
+        let response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_
