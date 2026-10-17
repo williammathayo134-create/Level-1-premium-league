@@ -124,16 +124,30 @@
     </style>
 </head>
 <body>
- <!-- SPLASH SCREEN -->
-<div id="splash-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #0b132b; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.8s ease;">
-    <h1 style="color: #ffcc00; font-size: 26px; font-weight: bold; text-align: center; margin-bottom: 5px;">LEVEL 1 PREMIUM LEAGUE</h1>
-    <p style="color: #ffffff; font-size: 13px; letter-spacing: 2px;">DREAM LEAGUE SOCCER (DLS)</p>
+<!-- SPLASH SCREEN ILIYOKAMILIKA -->
+<div id="splash-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #0b132b; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99999; transition: opacity 0.8s ease;">
+    <h1 style="color: #ffcc00; font-size: 24px; font-weight: bold; text-align: center; margin-bottom: 5px;">LEVEL 1 PREMIUM LEAGUE</h1>
+    <p style="color: #ffffff; font-size: 12px; letter-spacing: 2px;">DREAM LEAGUE SOCCER (DLS)</p>
     <div style="margin-top: 20px; width: 35px; height: 35px; border: 4px solid #ffcc00; border-top: 4px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
 </div>
+
 <style>
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 .fade-out { opacity: 0; pointer-events: none; }
 </style>
+
+<script>
+    // Hii itaanza kuhesabu sekunde 3 mara tu ukurasa unapofungua bila kusubiri mzigo mwingine
+    setTimeout(function() {
+        const splash = document.getElementById('splash-screen');
+        if (splash) {
+            splash.classList.add('fade-out');
+            setTimeout(function() {
+                splash.style.display = 'none';
+            }, 800);
+        }
+    }, 3000);
+</script>
     
     <div class="container">
         <h1 style="color: #ffc107; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">Level 1 Premium League (DLS)</h1>
