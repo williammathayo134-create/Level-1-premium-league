@@ -726,4 +726,27 @@ async function adminResetLeague() {
         alert("Hitilafu ya mtandao imetokea.");
     }
 }
+// --- MFUMO WA KUBADILISHA PICHA ZA NYUMA (BACKGROUND WALLPAPERS) ---
+const pichaZangu = [
+    '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', 
+    '8.jpg', '9.jpg', '10.jpg', '11.jpg', '12.jpg', 
+    '13.jpg', '14.jpg', '15.jpg'
+];
+
+let nambaYaPicha = 0;
+
+function badiliPichaNyuma() {
+    nambaYaPicha = (nambaYaPicha + 1) % pichaZangu.length;
+    document.body.style.backgroundImage = `linear-gradient(rgba(11, 19, 43, 0.8), rgba(11, 19, 43, 0.8)), url('${pichaZangu[nambaYaPicha]}')`;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.body.style.backgroundImage = `linear-gradient(rgba(11, 19, 43, 0.8), rgba(11, 19, 43, 0.8)), url('${pichaZangu[0]}')`;
+    document.body.style.backgroundSize = "cover";
+    document.body.style.backgroundPosition = "center center";
+    document.body.style.backgroundRepeat = "no-repeat";
+    
+    // Inabadilisha picha kila baada ya sekunde 6
+    setInterval(badiliPichaNyuma, 6000);
+});
 
