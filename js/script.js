@@ -741,12 +741,26 @@ function badiliPichaNyuma() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    document.body.style.backgroundImage = `linear-gradient(rgba(11, 19, 43, 0.8), rgba(11, 19, 43, 0.8)), url('${pichaZangu[0]}')`;
+    document.body.style.backgroundImage = 'linear-gradient(rgba(11, 19, 43, 0.8), rgba(11, 19, 43, 0.8)), url("images/' + pichazangu[0] + '")';
     document.body.style.backgroundSize = "cover";
     document.body.style.backgroundPosition = "center center";
     document.body.style.backgroundRepeat = "no-repeat";
-    
+
     // Inabadilisha picha kila baada ya sekunde 6
     setInterval(badiliPichaNyuma, 6000);
-});
 
+    // --- KUVUTA NEWS TICKER KUTOKA JSONBIN ---
+    fetch('https://api.jsonbin.io/v3/b/6ac561e7ac6210605a1a73c9/latest', {
+        headers: { 'X-Master-Key': '$2a$10$s6iBC3g.njqiqMtn5KXbqeJpY8CKQwxRuo3DNHYA43KfLd3LbJjC6' }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.record && data.record.ticker) {
+            const tickerSpan = document.getElementById('ticker-text-display');
+            if(tickerSpan) {
+                tickerSpan.innerText = data.record.ticker;
+            }
+        }
+    })
+    .catch(err => console.error("Hitilafu ya Ticker:", err));
+});
